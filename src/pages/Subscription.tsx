@@ -11,7 +11,7 @@ const Subscription: React.FC = () => {
         <div className="relative overflow-hidden">
           <div className="backdrop-blur-sm bg-green-900/30 p-8 rounded-xl border border-green-500/30 shadow-lg relative z-10">
             <div className="absolute inset-0 bg-gradient-to-r from-green-600/20 via-green-400/10 to-green-600/20 animate-pulse"></div>
-            <h2 className="text-3xl font-bold text-center text-purple-200 mb-4">التجربة المجانية</h2>
+            <h2 className="text-3xl font-bold text-center text-green-200 mb-4">التجربة المجانية</h2>
             <div className="text-center mb-6">
               <span className="text-4xl font-bold text-green-300">150</span>
               <span className="text-xl text-green-200 mr-2">فلكس مجاني</span>
