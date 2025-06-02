@@ -15,10 +15,10 @@ const Home: React.FC = () => {
             اكتشف قوة البوت السحري الذي سيرتقي بتجربة سيرفر الديسكورد الخاص بك إلى مستوى جديد كلياً
           </p>
           <div className="flex flex-col md:flex-row justify-center items-center gap-4">
-            <Link to="/subscription">
+            <Link to="/plans">
               <Button primary>اشترك الآن</Button>
             </Link>
-            <Link to="/subscription">
+            <Link to="/plans">
               <Button>جرب مجانا</Button>
             </Link>
           </div>
