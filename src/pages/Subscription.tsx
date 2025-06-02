@@ -13,10 +13,10 @@ const Subscription: React.FC = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-green-600/20 via-green-400/10 to-green-600/20 animate-pulse"></div>
             <h2 className="text-3xl font-bold text-center text-purple-200 mb-4">التجربة المجانية</h2>
             <div className="text-center mb-6">
-              <span className="text-4xl font-bold text-purple-300">150</span>
-              <span className="text-xl text-purple-200 mr-2">فلكس مجاني</span>
+              <span className="text-4xl font-bold text-green-300">150</span>
+              <span className="text-xl text-green-200 mr-2">فلكس مجاني</span>
             </div>
-            <p className="text-purple-100 text-center text-lg">
+            <p className="text-green-100 text-center text-lg">
               نرحب بكل سيرفر جديد مع رصيد مجاني رائع للبدء في تجربة قوة Majestic Flux
             </p>
           </div>
