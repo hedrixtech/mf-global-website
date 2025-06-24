@@ -67,7 +67,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
 
     if (!window.paypal) {
       const script = document.createElement("script");
-      script.src = `https://www.paypal.com/sdk/js?client-id=AXu8xIGvcupmP5JogubofCQ_BcPNqk9cMa8r3gf44aOgOk0_vdpDMXdbKJdu2QM7ZGcvUS5hlfdtcOLr&currency=USD`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=AbuSk-fOxPY3ABOYISD9w9bb0cuXbJuBmXspSIH00ayGBk4fZwCDipMN1nsHkDg9pIAJElNnK9QNYk5h&currency=USD`;
       script.async = true;
       script.onload = () => renderButtons();
       document.body.appendChild(script);
