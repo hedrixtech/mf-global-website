@@ -38,6 +38,8 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   const [showPayPal, setShowPayPal] = useState(false);
   const [isLocked, setIsLocked] = useState(false); // form locked, show invoice
   const paypalRef = useRef<HTMLDivElement>(null);
+  const [paymentOnlySuccess, setPaymentOnlySuccess] = useState(false);
+
 
   const minDollarAmount = 1;
 
@@ -109,43 +111,41 @@ const renderButtons = () => {
         });
       },
 
-      onApprove: async (_data: any, actions: any) => {
-        try {
-          setIsProcessing(true);
-          const details = await actions.order.capture();
+onApprove: async (_data: any, actions: any) => {
+  try {
+    setIsProcessing(true);
+    const details = await actions.order.capture();
 
-          // show initial success
-          setPaymentSuccess(true);
-          setPaymentDetails({ id: details.id });
-          setIsCrediting(true);
+    setIsCrediting(true);
+    const resp = await fetch("https://685ac01f001658d52d80.fra.appwrite.run/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        paymentId: details.id,
+        serverId,
+        planName: fixedPlanName || planFromRoute?.name,
+        amount,
+      }),
+    });
 
-          // send to backend
-          const resp = await fetch("https://685ac01f001658d52d80.fra.appwrite.run/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              paymentId: details.id,
-              serverId,
-              planName: fixedPlanName || planFromRoute?.name,
-              amount,
-            }),
-          });
+    const json = await resp.json();
+    setIsCrediting(false);
 
-          const json = await resp.json();
-          setIsCrediting(false);
+    if (json.success) {
+      setPaymentSuccess(true);
+      setPaymentDetails({ id: details.id });
+      onPaymentSuccess(json.details);
+    } else {
+      setPaymentOnlySuccess(true); // payment done but flux failed
+      setPaymentDetails({ id: details.id });
+    }
+  } catch (err) {
+    console.error("Error in onApprove:", err);
+    setIsCrediting(false);
+    setPaymentFailure(true);
+  }
+},
 
-          if (json.success) {
-            onPaymentSuccess(json.details);
-          } else {
-            setError("فشل في إضافة الفلكس: " + json.error);
-            setPaymentFailure(true);
-          }
-        } catch (err) {
-          console.error("Error in onApprove:", err);
-          setIsCrediting(false);
-          setPaymentFailure(true);
-        }
-      },
 
       onError: (_err: any) => {
         setPaymentFailure(true);
@@ -506,6 +506,23 @@ className="w-full rounded-md px-4 py-3 bg-slate-800 text-slate-100 placeholder-s
     </button>
   </div>
 )}
+
+{paymentOnlySuccess && (
+  <div className="flex flex-col items-center justify-center space-y-6 text-center text-slate-200">
+    <svg className="w-20 h-20 text-yellow-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M12 2a10 10 0 1010 10A10 10 0 0012 2z" />
+    </svg>
+    <h2 className="text-2xl font-bold text-yellow-400">تم الدفع بنجاح</h2>
+    <p className="text-sm max-w-md">
+      تمت عملية الدفع ولكن حدث خطأ أثناء إضافة الفلكس إلى حساب السيرفر. الرجاء التواصل مع الدعم الفني ومشاركة معرف العملية.
+    </p>
+    <pre className="bg-slate-800 text-slate-400 text-xs p-3 rounded-lg w-full max-w-sm overflow-auto">
+      معرف العملية: {paymentDetails?.id || "غير متوفر"}
+    </pre>
+    <a href="/" className="text-teal-400 underline hover:text-teal-300 transition">العودة للرئيسية</a>
+  </div>
+)}
+
 
         </div>
       </div>
