@@ -38,7 +38,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   const [showPayPal, setShowPayPal] = useState(false);
   const [isLocked, setIsLocked] = useState(false); // form locked, show invoice
   const paypalRef = useRef<HTMLDivElement>(null);
-  const [paymentOnlySuccess, setPaymentOnlySuccess] = useState(false);
+  const [paymentOnlySuccess, setPaymentOnlySuccess] = useState(true);
 
 
   const minDollarAmount = 1;

@@ -5,6 +5,7 @@ import Terms from './pages/Terms';
 import Subscription from './pages/Subscription';
 import './index.css';
 import Pay from './pages/pay';
+import StatusPage from './pages/Status';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/plans" element={<Subscription />} />
         <Route path="/pay" element={<Pay />} />
+        <Route path="/status" element={<StatusPage />} />
 
       </Routes>
     </Router>

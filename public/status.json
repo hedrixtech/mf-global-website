@@ -1,0 +1,63 @@
+{
+  "overallStatus": "warning",
+  "updatedAt": "2025-08-06 16:30",
+  "issueBanner": {
+    "show": true,
+    "severity": "warning",
+    "message": "يواجه نظام فحص حسابات السوني بعض المشاكل، الفريق يعمل على حل المشكلة."
+  },
+  "services": [
+    {
+      "name": "بوت ماجستك فلكس",
+      "status": "operational",
+      "timeline": [
+        { "time": "2025-08-05 17:00", "description": "تم استعادة الاتصال بالخادم." },
+        { "time": "2025-08-05 16:00", "description": "تم اكتشاف انقطاع في الخدمة." }
+      ]
+    },
+    {
+      "name": "قاعدة البيانات",
+      "status": "operational"
+    },
+    {
+      "name": "نظام FLUX",
+      "status": "operational"
+    },
+    {
+      "name": "الهاتف",
+      "status": "operational"
+    },
+    {
+      "name": "البنك",
+      "status": "operational"
+    },
+    {
+      "name": "السجل المدني",
+      "status": "operational"
+    },
+    {
+      "name": "فحص حسابات السوني",
+      "status": "down"
+    },
+    {
+      "name": "أوامر التفعيل",
+      "status": "warning",
+      "timeline": [
+        { "time": "2025-08-06 16:29", "description": "توجد مشاكل في نظام فحص حسابات السوني مما قد يؤثر قليلا على نظام التفعيل." }
+      ]
+    },
+    {
+      "name": "نظام العقود الرسمية",
+      "status": "operational"
+    },
+    {
+      "name": "نظام المسؤؤلين",
+      "status": "operational"
+    },
+    {
+      "name": "نظام API ( قريبا )",
+      "status": "down",
+      "timeline": []
+    }
+  ]
+}
