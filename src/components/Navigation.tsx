@@ -35,6 +35,14 @@ const Navigation: React.FC = () => {
             الاشتراكات
           </Link>
         </li>
+        <li>
+          <Link 
+            to="/partners" 
+            className={`${isActive('/partners')} hover:text-purple-100 transition-colors`}
+          >
+            الشراكات
+          </Link>
+        </li>
       </ul>
     </nav>
   );

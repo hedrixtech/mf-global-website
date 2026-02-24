@@ -6,6 +6,9 @@ import Subscription from './pages/Subscription';
 import './index.css';
 import Pay from './pages/pay';
 import StatusPage from './pages/Status';
+import Partners from './pages/Partners';
+import PartnershipPlans from './pages/PartnershipPlans';
+import PartnershipPolicy from './pages/PartnershipPolicy';
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
         <Route path="/plans" element={<Subscription />} />
         <Route path="/pay" element={<Pay />} />
         <Route path="/status" element={<StatusPage />} />
+        <Route path="/partners" element={<Partners />} />
+        <Route path="/partners/plans" element={<PartnershipPlans />} />
+        <Route path="/partners/policy" element={<PartnershipPolicy />} />
 
       </Routes>
     </Router>
