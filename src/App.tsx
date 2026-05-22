@@ -9,10 +9,12 @@ import StatusPage from './pages/Status';
 import Partners from './pages/Partners';
 import PartnershipPlans from './pages/PartnershipPlans';
 import PartnershipPolicy from './pages/PartnershipPolicy';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
 
       <Routes>
         <Route path="/" element={<Home />} />
