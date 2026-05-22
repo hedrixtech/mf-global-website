@@ -9,6 +9,7 @@ import StatusPage from './pages/Status';
 import Partners from './pages/Partners';
 import PartnershipPlans from './pages/PartnershipPlans';
 import PartnershipPolicy from './pages/PartnershipPolicy';
+import Affiliate from './pages/Affiliate';
 import ScrollToTop from './components/ScrollToTop';
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
         <Route path="/partners" element={<Partners />} />
         <Route path="/partners/plans" element={<PartnershipPlans />} />
         <Route path="/partners/policy" element={<PartnershipPolicy />} />
-
+        <Route path="/affiliate" element={<Affiliate />} />
       </Routes>
     </Router>
   );

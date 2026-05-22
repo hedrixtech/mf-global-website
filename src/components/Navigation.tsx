@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, Shield, FileText, CreditCard, Users } from 'lucide-react';
+import { Menu, X, Home, Shield, FileText, CreditCard, Users, Gift } from 'lucide-react';
 
 const Navigation: React.FC = () => {
   const location = useLocation();
@@ -10,6 +10,7 @@ const Navigation: React.FC = () => {
     { path: '/', label: 'الرئيسية', icon: Home },
     { path: '/plans', label: 'الاشتراكات', icon: CreditCard },
     { path: '/partners', label: 'الشراكات', icon: Users },
+    { path: '/affiliate', label: 'نظام الدعوات', icon: Gift },
     { path: '/terms', label: 'شروط الاستخدام', icon: FileText },
     { path: '/privacy', label: 'سياسة الخصوصية', icon: Shield },
   ];
