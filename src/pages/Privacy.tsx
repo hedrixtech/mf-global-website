@@ -90,7 +90,7 @@ const Privacy: React.FC = () => {
           </h2>
           <div className="flex items-center justify-center gap-2 text-purple-400/60 text-xs md:text-sm mb-6">
             <Clock className="w-4 h-4" />
-            <span>آخر تحديث: 1 يونيو 2025</span>
+            <span>آخر تحديث: 22 مايو 2026</span>
           </div>
           <div className="h-px w-32 mx-auto bg-gradient-to-l from-transparent via-purple-500/30 to-transparent" />
         </section>
