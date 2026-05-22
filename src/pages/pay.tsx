@@ -133,9 +133,9 @@ const Pay: React.FC = () => {
               <div className="rounded-2xl border border-purple-500/25 bg-purple-900/15 p-4 mb-6 flex items-start gap-3">
                 <Clock className="w-5.5 h-5.5 text-purple-400 shrink-0 mt-0.5 animate-pulse" />
                 <div className="space-y-1">
-                  <h4 className="text-sm font-bold text-purple-200">الدمج الجاري لمنصة LemonSqueezy</h4>
+                  <h4 className="text-sm font-bold text-purple-200">الدمج الجاري لمنصة</h4>
                   <p className="text-xs md:text-sm text-purple-200/80 leading-relaxed">
-                    نحن نعمل حالياً على دمج نظام <span className="text-purple-300 font-bold">LemonSqueezy</span> لتوفير عمليات دفع آلية وفورية مباشرة بالبطاقات الائتمانية دون أي تأخير. سنطلقها قريباً فور اكتمال الاختبارات.
+                    نحن نعمل حالياً على دمج نظام <span className="text-purple-300 font-bold"></span> لتوفير عمليات دفع آلية وفورية مباشرة بالبطاقات الائتمانية دون أي تأخير. سنطلقها قريباً فور اكتمال الاختبارات.
                   </p>
                 </div>
               </div>
