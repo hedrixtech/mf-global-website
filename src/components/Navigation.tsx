@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, Shield, FileText, CreditCard, Users, Gift } from 'lucide-react';
+import { Menu, X, Home, Shield, FileText, CreditCard, Users, Gift, LayoutGrid } from 'lucide-react';
 
 const Navigation: React.FC = () => {
   const location = useLocation();
@@ -11,6 +11,7 @@ const Navigation: React.FC = () => {
     { path: '/plans', label: 'الاشتراكات', icon: CreditCard },
     { path: '/partners', label: 'الشراكات', icon: Users },
     { path: '/affiliate', label: 'نظام الدعوات', icon: Gift },
+    { path: 'https://majesticflux-dashboard.vercel.app/guilds', label: 'لوحة التحكم', icon: LayoutGrid, external: true },
     { path: '/terms', label: 'شروط الاستخدام', icon: FileText },
     { path: '/privacy', label: 'سياسة الخصوصية', icon: Shield },
   ];
@@ -39,21 +40,37 @@ const Navigation: React.FC = () => {
         {/* Desktop Menu links */}
         <ul className="hidden md:flex items-center gap-1">
           {navItems.map((item) => {
-            const active = isActive(item.path);
+            const active = !item.external && isActive(item.path);
             const Icon = item.icon;
+            const content = (
+              <>
+                <Icon className="w-4 h-4" />
+                <span>{item.label}</span>
+              </>
+            );
             return (
               <li key={item.path} className="relative">
-                <Link
-                  to={item.path}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 select-none
-                    ${active 
-                      ? 'text-white bg-purple-500/20 border border-purple-500/30' 
-                      : 'text-purple-300/80 hover:text-white hover:bg-white/5 border border-transparent'
-                    }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.label}</span>
-                </Link>
+                {item.external ? (
+                  <a
+                    href={item.path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 select-none text-purple-300/80 hover:text-white hover:bg-white/5 border border-transparent"
+                  >
+                    {content}
+                  </a>
+                ) : (
+                  <Link
+                    to={item.path}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 select-none
+                      ${active 
+                        ? 'text-white bg-purple-500/20 border border-purple-500/30' 
+                        : 'text-purple-300/80 hover:text-white hover:bg-white/5 border border-transparent'
+                      }`}
+                  >
+                    {content}
+                  </Link>
+                )}
               </li>
             );
           })}
@@ -80,22 +97,39 @@ const Navigation: React.FC = () => {
         <div className="glass-panel rounded-3xl p-6 border border-white/10 shadow-2xl flex flex-col gap-4">
           <ul className="flex flex-col gap-2">
             {navItems.map((item) => {
-              const active = isActive(item.path);
+              const active = !item.external && isActive(item.path);
               const Icon = item.icon;
+              const content = (
+                <>
+                  <Icon className="w-5 h-5" />
+                  <span>{item.label}</span>
+                </>
+              );
               return (
                 <li key={item.path}>
-                  <Link
-                    to={item.path}
-                    onClick={() => setIsOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl text-base font-medium transition-all duration-200
-                      ${active 
-                        ? 'text-white bg-purple-500/35 border border-purple-500/40 shadow-lg shadow-purple-500/10' 
-                        : 'text-purple-300/80 hover:text-white hover:bg-white/5'
-                      }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span>{item.label}</span>
-                  </Link>
+                  {item.external ? (
+                    <a
+                      href={item.path}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-base font-medium transition-all duration-200 text-purple-300/80 hover:text-white hover:bg-white/5"
+                    >
+                      {content}
+                    </a>
+                  ) : (
+                    <Link
+                      to={item.path}
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl text-base font-medium transition-all duration-200
+                        ${active 
+                          ? 'text-white bg-purple-500/35 border border-purple-500/40 shadow-lg shadow-purple-500/10' 
+                          : 'text-purple-300/80 hover:text-white hover:bg-white/5'
+                        }`}
+                    >
+                      {content}
+                    </Link>
+                  )}
                 </li>
               );
             })}

@@ -54,6 +54,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-purple-400/60 text-sm">
             <p>© {new Date().getFullYear()} Majestic Flux • جميع الحقوق محفوظة</p>
             <div className="flex gap-6">
+              <a href="https://majesticflux-dashboard.vercel.app/guilds" target="_blank" rel="noopener noreferrer" className="hover:text-purple-300 transition-colors">لوحة التحكم</a>
               <Link to="/terms" className="hover:text-purple-300 transition-colors">شروط الاستخدام</Link>
               <Link to="/privacy" className="hover:text-purple-300 transition-colors">سياسة الخصوصية</Link>
               <a href="https://discord.gg/weg5eGG5cr" target="_blank" rel="noopener noreferrer" className="hover:text-purple-300 transition-colors">الدعم الفني</a>

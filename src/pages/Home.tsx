@@ -203,6 +203,11 @@ const Home: React.FC = () => {
             <Link to="/plans" className="w-full sm:w-auto">
               <Button primary>اشترك الآن</Button>
             </Link>
+            <a href="https://majesticflux-dashboard.vercel.app/guilds" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+              <Button className="bg-purple-600/20 hover:bg-purple-600/40 text-purple-200 border border-purple-500/30 shadow-lg shadow-purple-500/10">
+                لوحة التحكم
+              </Button>
+            </a>
             <a href="https://discord.gg/weg5eGG5cr" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
               <Button>جرب مجاناً</Button>
             </a>
