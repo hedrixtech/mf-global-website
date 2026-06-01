@@ -326,7 +326,7 @@ const PartnershipPolicy: React.FC = () => {
               {isExpanded('fairuse') ? <ChevronUp className="w-5 h-5 text-purple-400" /> : <ChevronDown className="w-5 h-5 text-purple-400" />}
             </button>
 
-            <div className={`transition-all duration-300 ease-in-out ${isExpanded('fairuse') ? 'max-h-[1000px] border-t border-white/5 p-6 md:p-8 bg-purple-950/10' : 'max-h-0 overflow-hidden'}`}>
+            <div className={`transition-all duration-300 ease-in-out ${isExpanded('fairuse') ? 'max-h-[1500px] border-t border-white/5 p-6 md:p-8 bg-purple-950/10' : 'max-h-0 overflow-hidden'}`}>
               <div className="space-y-4 text-purple-200/80 leading-[1.9] text-base">
                 <p>
                   تخضع جميع الشراكات لسياسة الاستخدام العادل. تحتفظ Hedrix Technology
@@ -346,6 +346,31 @@ const PartnershipPolicy: React.FC = () => {
                     </div>
                   ))}
                 </div>
+
+                {/* Fair Use Policy for Infrastructure resources */}
+                <div className="mt-6 p-5 rounded-xl bg-purple-950/40 border border-purple-500/20">
+                  <h4 className="text-purple-100 font-bold mb-3 flex items-center gap-2 text-sm md:text-base">
+                    <Layers className="w-4 h-4 text-purple-400" />
+                    <span>سياسة الاستهلاك العادل للبنية التحتية (الخوادم الخاصة)</span>
+                  </h4>
+                  <div className="space-y-3 text-purple-300/80 text-sm leading-relaxed">
+                    <p>
+                      نظراً لأن كل شريك يحصل على خادم خاص ومستقل يعمل بكفاءة عالية، فإن تشغيل هذا الخادم يخضع لسياسة استهلاك عادل صارمة للموارد التقنية المتاحة. في حال تجاوز الاستهلاك الفني للنسخة الخاصة الحدود المعتادة، سيتم تطبيق الإجراءات التالية:
+                    </p>
+                    <ul className="space-y-2 list-disc list-inside pr-2 text-purple-300/70">
+                      <li>
+                        <strong>فواتير التكلفة الإضافية:</strong> في حال تجاوز استهلاك الخادم للإنترنت والباندويدث (Internet Usage) أو مساحة التخزين (Storage Usage)، أو أي موارد تقنية أخرى تتسبب في تهديد عمل الخدمة، يحق للإدارة إصدار فواتير تغطية تكلفة تشغيلية إضافية.
+                      </li>
+                      <li>
+                        <strong>طبيعة الفواتير غير الربحية:</strong> يُقر الشريك بأن هذه الفواتير **ليست ربحية للإدارة**، بل هي مجرد تكلفة تشغيلية فعلية يتم سدادها مباشرة لمزودي الخدمات السحابية ومراكز البيانات لضمان استمرار تشغيل الخادم بنفس الجودة وبدون أي انقطاع.
+                      </li>
+                      <li>
+                        <strong>تعليق الخدمة في حال عدم السداد:</strong> في حال رفض الشريك سداد هذه الفواتير التشغيلية المباشرة، أو تسبب الاستهلاك المفرط في إلحاق أضرار بالبنية التحتية، يحق للإدارة تعليق أو إيقاف عمل السيرفر الخاص فوراً.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
                 <div className="mt-6 p-5 rounded-xl bg-red-950/25 border border-red-500/20 flex items-start gap-3.5">
                   <AlertTriangle className="w-6 h-6 text-red-400 shrink-0 mt-0.5" />
                   <div>
@@ -353,7 +378,7 @@ const PartnershipPolicy: React.FC = () => {
                     <p className="text-red-200/70 text-sm leading-relaxed">
                       تحتفظ Hedrix Technology بالحق في تعليق أو إنهاء الشراكة فورًا، دون
                       إشعار مسبق، في حال ثبوت مخالفة جوهرية لأي من بنود هذه السياسة.
-                      القرارات المتخذة في هذا الشأن نهائية وغير قابلة للطعن.
+                      القرارات المتخذة in هذا الشأن نهائية وغير قابلة للطعن.
                     </p>
                   </div>
                 </div>
