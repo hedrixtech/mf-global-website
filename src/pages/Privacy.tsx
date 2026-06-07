@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Layout from '../components/Layout';
 import { 
   Lock, 
   Eye, 
   Database, 
   UserCheck, 
   Cpu, 
-  Layers, 
   Scale, 
   HelpCircle,
   Clock,
@@ -17,36 +15,30 @@ import {
   Cookie,
   Mail,
   ShieldAlert,
-  Terminal,
-  Binary,
+  Compass,
   Check
 } from 'lucide-react';
 
 const Privacy: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('collect');
-  const [terminalLog, setTerminalLog] = useState<string>('INIT_DECRYPTION_SEQ...');
+  const [integrityHash, setIntegrityHash] = useState<string>('SHA256-4f7c89b2...');
+  const [systemLoad, setSystemLoad] = useState<number>(0.05);
 
   useEffect(() => {
     setVisible(true);
 
-    const logs = [
-      'INIT_DECRYPTION_SEQ...',
-      'CONNECTING TO MAJESTIC_FLUX_OS...',
-      'SECURITY PROTOCOL: SECURE_LINK_OK',
-      'COMPLIANCE STANDARD: SAAS_V2_GDPR',
-      'DECRYPTING PRIVACY MANIFEST... DONE'
-    ];
-
-    let currentLogIndex = 0;
+    // Dynamic hash & system load simulation
     const interval = setInterval(() => {
-      if (currentLogIndex < logs.length - 1) {
-        currentLogIndex++;
-        setTerminalLog(logs[currentLogIndex]);
-      } else {
-        clearInterval(interval);
+      const hex = '0123456789abcdef';
+      let newHash = 'SHA256-';
+      for (let i = 0; i < 8; i++) {
+        newHash += hex[Math.floor(Math.random() * hex.length)];
       }
-    }, 1200);
+      newHash += '...';
+      setIntegrityHash(newHash);
+      setSystemLoad(parseFloat((0.02 + Math.random() * 0.08).toFixed(4)));
+    }, 4000);
 
     const handleScroll = () => {
       const sections = [
@@ -55,7 +47,7 @@ const Privacy: React.FC = () => {
         'retention', 'thirdparty', 'children', 'updates', 'contact'
       ];
       
-      const scrollPosition = window.scrollY + 250;
+      const scrollPosition = window.scrollY + 200;
 
       for (const section of sections) {
         const el = document.getElementById(section);
@@ -89,13 +81,13 @@ const Privacy: React.FC = () => {
   };
 
   const sectionsList = [
-    { id: 'collect', code: 'DATA_01', label: 'البيانات التي نقوم بجمعها', icon: Database },
-    { id: 'usage', code: 'DATA_02', label: 'كيف نستخدم البيانات', icon: Eye },
-    { id: 'interactive', code: 'SYS_03', label: 'الهوية الرقمية والخدمات التفاعلية', icon: UserCheck },
-    { id: 'billing', code: 'PAY_04', label: 'المدفوعات والاشتراكات', icon: CreditCard },
-    { id: 'sharing', code: 'OUT_05', label: 'مشاركة البيانات', icon: Share2 },
+    { id: 'collect', code: 'COL_01', label: 'البيانات التي نقوم بجمعها', icon: Database },
+    { id: 'usage', code: 'USE_02', label: 'كيف نستخدم البيانات', icon: Eye },
+    { id: 'interactive', code: 'IDN_03', label: 'الهوية الرقمية والخدمات التفاعلية', icon: UserCheck },
+    { id: 'billing', code: 'BIL_04', label: 'المدفوعات والاشتراكات', icon: CreditCard },
+    { id: 'sharing', code: 'SHR_05', label: 'مشاركة البيانات والحدود', icon: Share2 },
     { id: 'security', code: 'SEC_06', label: 'حماية البيانات والمسؤولية', icon: Lock },
-    { id: 'cookies', code: 'TKN_07', label: 'ملفات تعريف الارتباط', icon: Cookie },
+    { id: 'cookies', code: 'COK_07', label: 'ملفات تعريف الارتباط', icon: Cookie },
     { id: 'rights', code: 'RGT_08', label: 'حقوق المستخدم وحق المسح', icon: Scale },
     { id: 'retention', code: 'RET_09', label: 'الاحتفاظ بالبيانات وتصفيتها', icon: Clock },
     { id: 'thirdparty', code: 'API_10', label: 'خدمات الطرف الثالث', icon: Cpu },
@@ -105,83 +97,101 @@ const Privacy: React.FC = () => {
   ];
 
   return (
-    <Layout>
-      {/* Decorative Cyberpunk Background Grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f1a3a_1px,transparent_1px),linear-gradient(to_bottom,#1f1a3a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.07] pointer-events-none z-0" />
+    <div className="min-h-screen bg-[#070709] text-slate-200 font-mono overflow-x-hidden relative selection:bg-amber-500 selection:text-black">
+      
+      {/* Stark background details: Scanline overlays & Warm amber particles */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_4px,6px_100%] pointer-events-none z-10 opacity-30" />
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-amber-500/5 rounded-full blur-[140px] pointer-events-none z-0" />
+      <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-slate-500/5 rounded-full blur-[140px] pointer-events-none z-0" />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10" dir="rtl">
-        {/* Header Section */}
-        <section
-          className={`text-center py-16 md:py-24 transition-all duration-1000 ease-out relative ${
-            visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
-          {/* Cyber scanner lights */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] md:w-[600px] h-[350px] md:h-[600px] bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none" />
-          
-          <div className="relative inline-flex items-center gap-2 px-4 py-1.5 rounded-md border border-cyan-500/30 bg-cyan-950/20 text-cyan-300 text-xs font-mono mb-6 uppercase tracking-widest select-none">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-            <span>Link Status: Encrypted // V2</span>
+      {/* Custom Header: Brutally Minimalist Tech Header */}
+      <header className="border-b border-white/10 py-6 relative z-20 bg-[#070709]/80 backdrop-blur-md sticky top-0 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 select-none">
+        <div className="flex items-center gap-3">
+          <div className="w-6 h-6 border-2 border-amber-500 bg-amber-500/10 flex items-center justify-center font-extrabold text-[10px] text-amber-400">
+            M
           </div>
-
-          <h2 className="text-4xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-slate-400 mb-6 tracking-tight font-mono uppercase">
-            PRIVACY_MANIFEST.sys
-          </h2>
-
-          <div className="flex flex-wrap items-center justify-center gap-6 text-slate-400/80 text-xs md:text-sm mb-8 font-mono">
-            <span className="flex items-center gap-2 border border-white/5 bg-white/5 px-3 py-1.5 rounded-lg">
-              <Clock className="w-4 h-4 text-cyan-400" />
-              <span>آخر تحديث: يونيو 2026</span>
-            </span>
-            <span className="flex items-center gap-2 border border-white/5 bg-white/5 px-3 py-1.5 rounded-lg">
-              <Binary className="w-4 h-4 text-purple-400" />
-              <span>SEC_LEVEL: 05</span>
-            </span>
-          </div>
-
-          <p className="text-slate-300/80 max-w-2xl mx-auto leading-relaxed text-sm md:text-base pr-4 border-r-2 border-purple-500/30 text-right">
-            مرحبًا بك في البوابة التنظيمية لـ Majestic Flux. نحن نضع سرية وحماية بياناتك التشغيلية في طليعة أولوياتنا الهندسية. توضح هذه الوثيقة بأسلوب تقني شفاف كيف نقوم بمعالجة وتأمين بياناتك الرقمية عبر منصتنا السحابية.
-          </p>
-        </section>
-
-        {/* Live Security Console / Decryption simulation */}
-        <div className="mb-12 max-w-4xl mx-auto glass-panel rounded-tr-3xl rounded-bl-3xl p-6 border-l-2 border-t-2 border-cyan-500/30 bg-black/40 backdrop-blur-md shadow-2xl relative overflow-hidden font-mono text-left" dir="ltr">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl pointer-events-none" />
-          <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4 text-xs text-slate-400">
-            <div className="flex items-center gap-2">
-              <Terminal className="w-4 h-4 text-cyan-400 animate-pulse" />
-              <span>SECURE PROTOCOL TERMINAL v2.0.1</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-500/40" />
-              <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/40" />
-              <span className="w-2.5 h-2.5 rounded-full bg-green-500/40" />
-            </div>
-          </div>
-          <div className="space-y-1.5 text-xs md:text-sm text-cyan-300/90 leading-relaxed font-semibold">
-            <p className="text-slate-500 font-bold">// SYSTEM LOGS:</p>
-            <p>&gt; {terminalLog}</p>
-            <p className="text-purple-400/90">&gt; DECRYPTION_KEYS: Verified [Dodo Payments // Core/Prime/Nexus Access]</p>
-          </div>
+          <span className="font-extrabold text-sm tracking-wider uppercase text-white">
+            Majestic Flux // Archive
+          </span>
         </div>
 
-        {/* Main Grid Content */}
+        {/* Custom Navigation */}
+        <nav className="flex items-center gap-2 flex-wrap justify-center text-[10px] uppercase font-bold">
+          <Link to="/" className="px-3 py-1.5 border border-white/10 hover:border-amber-500/50 hover:bg-amber-500/5 transition-all text-slate-400 hover:text-amber-400">
+            [01] الرئيسية
+          </Link>
+          <Link to="/plans" className="px-3 py-1.5 border border-white/10 hover:border-amber-500/50 hover:bg-amber-500/5 transition-all text-slate-400 hover:text-amber-400">
+            [02] الاشتراكات
+          </Link>
+          <a href="https://discord.gg/weg5eGG5cr" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-white/10 hover:border-amber-500/50 hover:bg-amber-500/5 transition-all text-slate-400 hover:text-amber-400">
+            [03] الدعم الفني
+          </a>
+        </nav>
+      </header>
+
+      {/* Main Container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-12 relative z-20">
+        
+        {/* Document Title Banner */}
+        <section
+          className={`py-8 mb-12 border-b border-white/10 transition-all duration-1000 ease-out ${
+            visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          }`}
+        >
+          <div className="max-w-3xl">
+            <span className="text-[10px] text-amber-500 font-bold tracking-widest uppercase mb-2 block">// CLASSIFICATION: PRIVACY POLICY</span>
+            <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight uppercase mb-4 font-serif">
+              سياسة الخصوصية والأمان
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-sans max-w-xl">
+              الوثيقة الحاكمة لحقوق البيانات الشخصية وحماية المعطيات الفنية والفوترة. يرجى الاطلاع على ضوابط معالجة البيانات قبل تفعيل خيارات الجيل الجديد.
+            </p>
+          </div>
+        </section>
+
+        {/* Split Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Right Column: Cybernetic Navigation Sidebar */}
-          <aside className="hidden lg:block lg:col-span-4 sticky top-28">
-            <div className="glass-panel rounded-tr-3xl rounded-bl-3xl p-6 border border-purple-500/15 shadow-xl bg-purple-950/10 backdrop-blur-md relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
+          {/* Right Column: Live Integrity Scanner sidebar */}
+          <aside className="lg:col-span-4 sticky top-24 space-y-6">
+            
+            {/* System Status Display widget */}
+            <div className="border-2 border-white/10 bg-[#0c0c0e] p-6 rounded-none shadow-md relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
               
-              <h3 className="text-sm font-extrabold text-cyan-300/90 mb-4 border-b border-purple-500/10 pb-3 flex items-center justify-between font-mono tracking-wider">
-                <span className="flex items-center gap-2">
-                  <Layers className="w-4.5 h-4.5 text-purple-400" />
-                  MANIFEST_INDEX
-                </span>
-                <span className="text-xs text-purple-400/50">SEC_LEVEL_05</span>
+              <h3 className="text-xs font-bold text-white mb-4 border-b border-white/10 pb-3 flex items-center justify-between tracking-wider">
+                <span>SYSTEM INSPECTOR</span>
+                <span className="text-amber-500 text-[10px]">LIVE</span>
+              </h3>
+
+              <div className="space-y-3.5 text-[10px] text-slate-400 font-mono">
+                <div className="flex justify-between border-b border-white/5 pb-2">
+                  <span>INTEGRITY_HASH:</span>
+                  <span className="text-amber-400 font-bold">{integrityHash}</span>
+                </div>
+                <div className="flex justify-between border-b border-white/5 pb-2">
+                  <span>SYSTEM_LOAD:</span>
+                  <span className="text-slate-300 font-bold">{(systemLoad * 100).toFixed(2)}%</span>
+                </div>
+                <div className="flex justify-between border-b border-white/5 pb-2">
+                  <span>SSL_CONNECTION:</span>
+                  <span className="text-emerald-400 font-bold">ACTIVE // TLS1.3</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>DATA_COMPLIANCE:</span>
+                  <span className="text-amber-500 font-bold">GDPR // SAAS V2</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Monospace Sidebar Links */}
+            <div className="border border-white/10 bg-[#0c0c0e] p-5 shadow-lg">
+              <h3 className="text-xs font-bold text-slate-300 mb-3 border-b border-white/10 pb-3 uppercase tracking-widest flex items-center gap-2">
+                <Compass className="w-4 h-4 text-amber-500" />
+                فهرس الوثائق الفنية
               </h3>
               
-              <nav className="space-y-1.5 max-h-[55vh] overflow-y-auto custom-scrollbar pr-1">
+              <nav className="space-y-1 max-h-[40vh] overflow-y-auto custom-scrollbar pr-1">
                 {sectionsList.map((item) => {
                   const Icon = item.icon;
                   const active = activeSection === item.id;
@@ -189,18 +199,18 @@ const Privacy: React.FC = () => {
                     <button
                       key={item.id}
                       onClick={() => scrollToSection(item.id)}
-                      className={`w-full flex items-center gap-3 px-3.5 py-3.5 text-right text-xs rounded-xl transition-all duration-300 ${
+                      className={`w-full flex items-center gap-3 px-3 py-3 text-right text-xs transition-all duration-300 border-r-2 ${
                         active 
-                          ? 'bg-gradient-to-l from-cyan-950/30 to-purple-950/20 text-cyan-300 border-r-2 border-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.15)] font-bold font-mono' 
-                          : 'text-slate-400/60 hover:text-slate-200 hover:bg-white/5 border-r-2 border-transparent font-mono'
+                          ? 'bg-amber-500/5 text-amber-400 border-amber-500 font-bold shadow-[inset_3px_0_0_0_#f59e0b]' 
+                          : 'text-slate-500 hover:text-slate-300 hover:bg-white/5 border-transparent'
                       }`}
                     >
-                      <span className={`text-[10px] tracking-widest opacity-60 font-mono ${active ? 'text-cyan-400' : 'text-slate-600'}`}>
+                      <span className={`text-[9px] font-bold ${active ? 'text-amber-500' : 'text-slate-600'}`}>
                         {item.code}
                       </span>
-                      <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-cyan-400' : 'text-slate-500/30'}`} />
-                      <span className="truncate flex-grow font-tajawal">{item.label}</span>
-                      {active && <ChevronLeft className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />}
+                      <Icon className={`w-3.5 h-3.5 shrink-0 ${active ? 'text-amber-400' : 'text-slate-700'}`} />
+                      <span className="truncate flex-grow font-sans font-semibold text-[11px]">{item.label}</span>
+                      {active && <ChevronLeft className="w-3 h-3 text-amber-400" />}
                     </button>
                   );
                 })}
@@ -208,91 +218,90 @@ const Privacy: React.FC = () => {
             </div>
           </aside>
 
-          {/* Left Column: Asymmetric Glowing Section Cards */}
-          <div className="lg:col-span-8 space-y-8">
+          {/* Left Column: Asymmetric Editorial Cards */}
+          <div className="lg:col-span-8 space-y-10">
             
             {/* 1. Data Collection */}
             <div 
               id="collect" 
-              className="glass-panel rounded-tr-3xl rounded-bl-3xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-cyan-500/20 bg-purple-950/5"
+              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
             >
-              <div className="absolute top-0 right-0 w-2 h-2 bg-cyan-400 rounded-full blur-[2px]" />
+              <div className="absolute top-0 right-0 w-8 h-[1px] bg-amber-500" />
+              <div className="absolute top-0 right-0 w-[1px] h-8 bg-amber-500" />
+              
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-                  <Database className="w-5 h-5 text-cyan-400" />
-                </div>
+                <Database className="w-5 h-5 text-amber-500 shrink-0" />
                 <div>
-                  <span className="text-[10px] font-mono text-cyan-400/70 tracking-widest">MANIFEST_FILE // 01</span>
-                  <h3 className="text-xl font-extrabold text-white">البيانات التي نقوم بجمعها</h3>
+                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // COL_01</span>
+                  <h3 className="text-lg font-bold text-white uppercase font-serif">1. البيانات التي نقوم بجمعها</h3>
                 </div>
               </div>
               
-              <p className="text-slate-300/80 leading-[1.8] text-sm md:text-base mb-6 font-tajawal">
-                من أجل تشغيل المنصة وربط البوت وتوفير باقات الاشتراك المخصصة بأعلى فاعلية، نقوم بجمع مجموعة من البيانات الفنية والتشغيلية المحدودة:
+              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans mb-6">
+                يقوم النظام تلقائياً وبشكل مبرمج بحفظ ومعالجة المعطيات الفنية الضرورية لتفعيل الاشتراكات والتواصل السحابي:
               </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  {
-                    title: 'الحساب والتعريف',
-                    desc: 'معرف Discord الرقمي (User ID)، اسم المستخدم العام، الصورة الشخصية العامة، ومعرف السيرفر (Server ID) لربط الأنظمة تلقائياً.'
-                  },
-                  {
-                    title: 'تفاصيل الخدمة والخطط',
-                    desc: 'نوع الباقة والاشتراك الحالي (Core Access, Prime Access, Nexus Access) وإعدادات التشغيل الفنية المسجلة من قبلك.'
-                  },
-                  {
-                    title: 'بيانات التفاعل والهاتف',
-                    desc: 'المدخلات والمستندات الافتراضية المرفوعة داخل واجهات الهاتف التفاعلي ونظام الهوية الافتراضية داخل اللعبة.'
-                  },
-                  {
-                    title: 'إحصاءات الاستخدام والأداء',
-                    desc: 'الصفحات التي تم زيارتها بلوحة التحكم، الأوامر المنفذة، معلومات الجهاز والمتصفح وسجلات تشخيص الأخطاء.'
-                  }
-                ].map((item, i) => (
-                  <div key={i} className="p-4 rounded-xl border border-white/5 bg-slate-950/40 relative overflow-hidden hover:border-purple-500/10 transition-colors">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-cyan-500/20" />
-                    <h4 className="text-sm font-bold text-white mb-1.5 flex items-center gap-2">
-                      <span className="text-cyan-400 text-xs font-mono">[{i+1}]</span>
-                      {item.title}
-                    </h4>
-                    <p className="text-xs text-slate-400/90 leading-relaxed font-tajawal">{item.desc}</p>
-                  </div>
-                ))}
+              <div className="space-y-4 font-sans">
+                <div className="p-4 bg-black/40 border border-white/5">
+                  <h4 className="text-xs font-bold text-amber-400 mb-1 font-mono">&gt; USER_IDENTIFIERS</h4>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    معرف المستخدم (Discord User ID)، اسم الحساب العام، الصورة الشخصية، ومعرفات السيرفر لتفعيل البوت.
+                  </p>
+                </div>
+
+                <div className="p-4 bg-black/40 border border-white/5">
+                  <h4 className="text-xs font-bold text-amber-400 mb-1 font-mono">&gt; SUBSCRIBER_TIER_DATA</h4>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    فئة الاشتراك الحالي (مثل Core Access أو Prime Access أو Nexus Access)، وإعدادات التخصيص التفضيلية الخاصة بك.
+                  </p>
+                </div>
+
+                <div className="p-4 bg-black/40 border border-white/5">
+                  <h4 className="text-xs font-bold text-amber-400 mb-1 font-mono">&gt; INTERACTIVE_PHONE_DATA</h4>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    النصوص والملفات المرفوعة والمدخلة اختيارياً من قبلك داخل واجهات الهاتف الافتراضية وأنظمة الهوية.
+                  </p>
+                </div>
+
+                <div className="p-4 bg-black/40 border border-white/5">
+                  <h4 className="text-xs font-bold text-amber-400 mb-1 font-mono">&gt; TELEMETRY_LOGS</h4>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    نوع الأوامر والعمليات البرمجية المنفذة، معلومات المتصفح، وسجلات تشخيص الأخطاء البرمجية للموقع.
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* 2. How We Use Data */}
             <div 
               id="usage" 
-              className="glass-panel rounded-tr-3xl rounded-bl-3xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-cyan-500/20 bg-purple-950/5"
+              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
             >
-              <div className="absolute top-0 right-0 w-2 h-2 bg-purple-400 rounded-full blur-[2px]" />
+              <div className="absolute top-0 right-0 w-8 h-[1px] bg-amber-500" />
+              <div className="absolute top-0 right-0 w-[1px] h-8 bg-amber-500" />
+
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                  <Eye className="w-5 h-5 text-purple-400" />
-                </div>
+                <Eye className="w-5 h-5 text-amber-500 shrink-0" />
                 <div>
-                  <span className="text-[10px] font-mono text-purple-400/70 tracking-widest">MANIFEST_FILE // 02</span>
-                  <h3 className="text-xl font-bold text-white">كيف نستخدم البيانات</h3>
+                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // USE_02</span>
+                  <h3 className="text-lg font-bold text-white uppercase font-serif">2. كيف نستخدم البيانات</h3>
                 </div>
               </div>
               
-              <p className="text-slate-300/80 leading-[1.8] text-sm md:text-base mb-6 font-tajawal">
-                تُعالج البيانات الفنية والتشغيلية المجمعة من أجل ضمان الأداء والاستقرار وتحسين تجربة اللعب والفوترة السحابية:
+              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans mb-4">
+                يتم استخدام البيانات المجمعة حصرياً لتحقيق الالتزامات التقنية والفوترة وتأمين السيرفرات:
               </p>
               
-              <div className="space-y-3">
+              <div className="space-y-3 font-sans">
                 {[
-                  'توفير ودعم وإدارة البنية التحتية والمنصات السحابية بشكل كامل ودون انقطاع.',
-                  'تخصيص المزايا بناءً على فئة الاشتراك المفعلة (Core Access, Prime Access, Nexus Access).',
-                  'إجراء عمليات التحقق المبرمجة للمدفوعات عبر بوابات الدفع الخارجية وتوثيقها لمنع تضارب الفواتير.',
-                  'مراقبة جودة الاتصال وتتبع الأخطاء البرمجية لإصلاحها وتأمين السيرفر من هجمات الإغراق.',
-                  'حماية وسلامة السيرفرات والتأكد من مطابقة شروط الاستخدام وقوانين منصة ديسكورد.'
+                  'توفير ودعم وإدارة الخوادم الخاصة وتأمينها وضمان استجابة النظام.',
+                  'التحقق التلقائي من حالة الدفع وتزامن خطط الاشتراك (Core, Prime, Nexus Access).',
+                  'تحليل ومراجعة سجلات الأخطاء البرمجية لرفع الاستقرار وحظر محاولات إساءة الاستخدام.',
+                  'التحقق الأمني للأنظمة لمنع عمليات القرصنة والتعدي على البنية التحتية.'
                 ].map((text, i) => (
-                  <div key={i} className="flex items-start gap-3 p-3.5 rounded-xl border border-white/5 bg-slate-950/20 font-tajawal">
-                    <Check className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
-                    <span className="text-xs md:text-sm text-slate-300/80">{text}</span>
+                  <div key={i} className="flex items-start gap-2.5 p-3 bg-black/20 border border-white/5 text-xs text-slate-400">
+                    <Check className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                    <span>{text}</span>
                   </div>
                 ))}
               </div>
@@ -301,237 +310,216 @@ const Privacy: React.FC = () => {
             {/* 3. Digital Identity */}
             <div 
               id="interactive" 
-              className="glass-panel rounded-tr-3xl rounded-bl-3xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-cyan-500/20 bg-purple-950/5"
+              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                  <UserCheck className="w-5 h-5 text-cyan-400" />
-                </div>
+                <UserCheck className="w-5 h-5 text-amber-500 shrink-0" />
                 <div>
-                  <span className="text-[10px] font-mono text-cyan-400/70 tracking-widest">MANIFEST_FILE // 03</span>
-                  <h3 className="text-xl font-bold text-white">الهوية الرقمية والخدمات التفاعلية</h3>
+                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // IDN_03</span>
+                  <h3 className="text-lg font-bold text-white uppercase font-serif">3. الهوية الرقمية والخدمات التفاعلية</h3>
                 </div>
               </div>
-              <p className="text-slate-300/80 leading-[1.8] text-sm md:text-base leading-relaxed mb-4 font-tajawal">
-                تتيح المنصة إمكانية تخصيص هويات رقمية وملفات تعريف افتراضية ورخص قيادة تخيلية داخل بيئة اللعب التفاعلية. 
+              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans leading-relaxed mb-4">
+                تتضمن المنصة أنظمة محاكاة ترفيهية مثل الهويات ورخص القيادة والبطاقات التفاعلية. 
               </p>
-              <p className="text-slate-400/90 leading-[1.8] text-xs md:text-sm font-tajawal">
-                هذه الهويات والملفات هي **تخيلية وترفيهية بالكامل** ومخصصة للاستخدام البرمجي الداخلي فقط. لا تعبر ولا تمثل مستندات ثبوتية أو حكومية واقعية مطلقاً. يتحمل المستخدم المسؤولية الفردية التامة عن كافة البيانات والصور التي يختار إدخالها أو رفعها داخل هذه الأنظمة.
+              <p className="text-slate-400 leading-[1.8] text-[11px] font-sans">
+                يقر المستخدم بأن هذه البيانات هي **افتراضية تماماً ولغرض الترفيه واللعب فقط** داخل المنصة، ولا تحمل أي مرجعية رسمية أو قانونية في العالم الحقيقي. يلتزم المستخدم بعدم إدخال بيانات حقيقية حساسة.
               </p>
             </div>
 
-            {/* 4. Payments & Billing */}
+            {/* 4. Payments */}
             <div 
               id="billing" 
-              className="glass-panel rounded-tr-3xl rounded-bl-3xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-cyan-500/20 bg-purple-950/5"
+              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                  <CreditCard className="w-5 h-5 text-purple-400" />
-                </div>
+                <CreditCard className="w-5 h-5 text-amber-500 shrink-0" />
                 <div>
-                  <span className="text-[10px] font-mono text-purple-400/70 tracking-widest">MANIFEST_FILE // 04</span>
-                  <h3 className="text-xl font-bold text-white">المدفوعات والاشتراكات</h3>
+                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // BIL_04</span>
+                  <h3 className="text-lg font-bold text-white uppercase font-serif">4. المدفوعات والاشتراكات</h3>
                 </div>
               </div>
-              <p className="text-slate-300/80 leading-[1.8] text-sm md:text-base leading-relaxed mb-4 font-tajawal">
-                تتم معالجة وتسجيل كافة معاملات الاشتراكات السحابية عن طريق مزودي وبوابات دفع معتمدين دولياً (مثل Dodo Payments) لتوفير أقصى معايير الأمان. 
+              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans mb-4">
+                تتم معالجة وتأمين المدفوعات والفوترة السحابية عبر بوابات معتمدة متوافقة مع معايير الأمان (مثل Dodo Payments).
               </p>
-              <div className="p-4 rounded-2xl border border-purple-500/10 bg-purple-500/5 font-mono text-xs text-purple-300/80 space-y-2">
-                <p>&gt; STORAGE_STATUS: NO_SENSITIVE_CREDIT_CARD_DATA_STORED</p>
-                <p>&gt; KEEP_METADATA: [payment_status, tx_id, subscription_tier, renew_date]</p>
-              </div>
+              <p className="text-slate-400 text-xs font-sans mb-4">
+                لا تحتفظ خوادمنا بأرقام بطاقات الدفع أو البيانات المصرفية الحساسة. يُخزن فقط سجل تكويني للتحقق الفني يشمل حالة الاشتراك، رقم الفاتورة المشفر، والمبلغ لغرض المراجعة.
+              </p>
             </div>
 
             {/* 5. Sharing Data */}
             <div 
               id="sharing" 
-              className="glass-panel rounded-tr-3xl rounded-bl-3xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-cyan-500/20 bg-purple-950/5"
+              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                  <Share2 className="w-5 h-5 text-cyan-400" />
-                </div>
+                <Share2 className="w-5 h-5 text-amber-500 shrink-0" />
                 <div>
-                  <span className="text-[10px] font-mono text-cyan-400/70 tracking-widest">MANIFEST_FILE // 05</span>
-                  <h3 className="text-xl font-bold text-white">مشاركة البيانات</h3>
+                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // SHR_05</span>
+                  <h3 className="text-lg font-bold text-white uppercase font-serif">5. مشاركة البيانات والحدود</h3>
                 </div>
               </div>
-              <p className="text-slate-300/80 leading-[1.8] text-sm md:text-base leading-relaxed mb-4 font-tajawal">
-                نحن لا نقوم ببيع أو مشاركة بيانات المشتركين لأغراض تسويقية أو دعائية. تُشارك البيانات الفنية فقط في الحالات الضرورية المحددة أدناه:
+              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans mb-4">
+                لا نبيع بيانات المستخدمين أو السيرفرات لأي طرف ثالث. قد نشارك أجزاء تقنية محدودة فقط مع:
               </p>
-              <ul className="space-y-2 text-slate-400 text-xs md:text-sm list-decimal list-inside pr-2 leading-relaxed font-tajawal">
-                <li>مع مزودي الاستضافة والبنية الأساسية لتسهيل تشغيل الخوادم.</li>
-                <li>لتطبيق شروط الخدمة وكشف عمليات التلاعب والقرصنة الرقمية.</li>
-                <li>عند الاستجابة لطلبات قضائية ملزمة بموجب الأنظمة والقوانين المعمول بها.</li>
+              <ul className="space-y-2 text-slate-400 text-xs font-sans list-disc list-inside pr-2 leading-relaxed">
+                <li>مزودي خدمات الاستضافة السحابية ومزودي بوابات الدفع لإتمام عمليات التشغيل.</li>
+                <li>السلطات الأمنية الرسمية عند استلام مذكرات أو أوامر قضائية ملزمة بموجب القانون.</li>
+                <li>فرق الفحص الأمني لمنع وكشف محاولات التلاعب وإساءة استخدام المنصة.</li>
               </ul>
             </div>
 
-            {/* 6. Security and Liability */}
+            {/* 6. Security */}
             <div 
               id="security" 
-              className="glass-panel rounded-tr-3xl rounded-bl-3xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-cyan-500/20 bg-purple-950/5"
+              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                  <Lock className="w-5 h-5 text-purple-400" />
-                </div>
+                <Lock className="w-5 h-5 text-amber-500 shrink-0" />
                 <div>
-                  <span className="text-[10px] font-mono text-purple-400/70 tracking-widest">MANIFEST_FILE // 06</span>
-                  <h3 className="text-xl font-bold text-white">حماية البيانات والمسؤولية</h3>
+                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // SEC_06</span>
+                  <h3 className="text-lg font-bold text-white uppercase font-serif">6. حماية البيانات والمسؤولية</h3>
                 </div>
               </div>
-              <p className="text-slate-300/80 leading-[1.8] text-sm md:text-base leading-relaxed mb-4 font-tajawal">
-                نلتزم بتشفير كافة اتصالات البنية الأساسية (SSL/TLS) ووضع قيود صارمة على وصول البيانات لقواعد البيانات. ومع ذلك، يُقر المستخدم فوتوغرافياً بأن البيئة الرقمية ليست آمنة بنسبة مطلقة، وأننا نبذل قصارى جهدنا التقني لمنع حدوث ثغرات، ولا نتحمل المسؤولية القانونية في حال تسرب البيانات نتيجة عوامل طارئة خارجة عن سلطتنا الفنية.
+              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans mb-4">
+                تطبق Hedrix Technology تشفيراً شاملاً وجدراناً نارية لحماية قواعد البيانات وتراسل البيانات.
               </p>
+              <div className="p-4 bg-red-950/20 border border-red-500/20 text-red-200/90 text-xs font-sans rounded-none flex items-start gap-2.5">
+                <ShieldAlert className="w-4.5 h-4.5 text-red-500 shrink-0 mt-0.5" />
+                <span>إقرار بعدم الضمان المطلق: يُقر المستخدم بأن الأنظمة الرقمية معرضة للاختراق دائماً، ويتنازل عن مقاضاة الشركة أو طلب تعويضات في حال فقدان أو تسرب البيانات نتيجة اختراقات برمجية غير متوقعة خارجة عن إرادتنا.</span>
+              </div>
             </div>
 
             {/* 7. Cookies */}
             <div 
               id="cookies" 
-              className="glass-panel rounded-tr-3xl rounded-bl-3xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-cyan-500/20 bg-purple-950/5"
+              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                  <Cookie className="w-5 h-5 text-cyan-400" />
-                </div>
+                <Cookie className="w-5 h-5 text-amber-500 shrink-0" />
                 <div>
-                  <span className="text-[10px] font-mono text-cyan-400/70 tracking-widest">MANIFEST_FILE // 07</span>
-                  <h3 className="text-xl font-bold text-white">ملفات تعريف الارتباط (Cookies)</h3>
+                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // COK_07</span>
+                  <h3 className="text-lg font-bold text-white uppercase font-serif">7. ملفات تعريف الارتباط</h3>
                 </div>
               </div>
-              <p className="text-slate-300/80 leading-[1.8] text-sm md:text-base leading-relaxed font-tajawal">
-                نستخدم ملفات تعريف الارتباط وتقنيات التخزين المحلية في المتصفح لتوثيق جلسة تسجيل دخولك للوحة التحكم وحفظ الخيارات التفضيلية وتسهيل التنقل. يمكنك التحكم بها بالكامل أو إلغاؤها عبر إعدادات المتصفح.
+              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans leading-relaxed">
+                نستخدم ملفات تعريف الارتباط (Cookies) وملفات التخزين المحلية في لوحة التحكم لتذكر جلسة تسجيل الدخول وتوثيق هويتك. يمكنك تعطيلها عبر إعدادات المتصفح، ولكن قد تفقد بعض الميزات الفنية.
               </p>
             </div>
 
             {/* 8. User Rights */}
             <div 
               id="rights" 
-              className="glass-panel rounded-tr-3xl rounded-bl-3xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-cyan-500/20 bg-purple-950/5"
+              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                  <Scale className="w-5 h-5 text-purple-400" />
-                </div>
+                <Scale className="w-5 h-5 text-amber-500 shrink-0" />
                 <div>
-                  <span className="text-[10px] font-mono text-purple-400/70 tracking-widest">MANIFEST_FILE // 08</span>
-                  <h3 className="text-xl font-bold text-white">حقوق المستخدم وحق المسح</h3>
+                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // RGT_08</span>
+                  <h3 className="text-lg font-bold text-white uppercase font-serif">8. حقوق المستخدم وحق المسح</h3>
                 </div>
               </div>
-              <p className="text-slate-300/80 leading-[1.8] text-sm md:text-base leading-relaxed mb-4 font-tajawal">
-                يحق لكل مشترك الاطلاع على كافة بياناته وتعديلها أو طلب حذفها نهائياً من سجلات قواعد البيانات من خلال فتح تذكرة دعم فني.
+              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans mb-4">
+                يحق للمشترك طلب الحصول على نسخة من بياناته، تعديلها، أو مسحها نهائياً من خوادمنا عبر فتح تذكرة دعم فني.
               </p>
-              <div className="p-4 rounded-xl border border-red-500/10 bg-red-500/5">
-                <p className="text-xs text-red-300/90 leading-relaxed font-tajawal">
-                  ⚠️ تنبيه: إتمام طلب مسح البيانات كلياً يؤدي فوراً إلى إلغاء باقاتك النشطة وتصفير إعدادات السيرفر دون إمكانية استرجاعها.
-                </p>
+              <div className="p-4 bg-slate-900 border border-white/5 text-xs text-slate-400 font-sans">
+                * تنويه: طلب حذف البيانات يؤدي فوراً إلى تصفير أرصدتك وإلغاء باقاتك النشطة وإعدادات السيرفر كلياً ودون إمكانية للاسترجاع.
               </div>
             </div>
 
             {/* 9. Data Retention */}
             <div 
               id="retention" 
-              className="glass-panel rounded-tr-3xl rounded-bl-3xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-cyan-500/20 bg-purple-950/5"
+              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-cyan-400" />
-                </div>
+                <Clock className="w-5 h-5 text-amber-500 shrink-0" />
                 <div>
-                  <span className="text-[10px] font-mono text-cyan-400/70 tracking-widest">MANIFEST_FILE // 09</span>
-                  <h3 className="text-xl font-bold text-white">الاحتفاظ بالبيانات وتصفيتها</h3>
+                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // RET_09</span>
+                  <h3 className="text-lg font-bold text-white uppercase font-serif">9. الاحتفاظ بالبيانات وتصفيتها</h3>
                 </div>
               </div>
-              <p className="text-slate-300/80 leading-[1.8] text-sm md:text-base leading-relaxed font-tajawal">
-                نحتفظ بالبيانات فقط للمدة اللازمة لتوفير الخدمة والفوترة السحابية ومكافحة التلاعب الفني. نقوم بعمليات تصفية دورية وممنهجة لحذف سجلات الأداء والأوامر والعمليات التاريخية غير اللازمة لضمان خفة واستقرار قواعد البيانات.
+              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans leading-relaxed">
+                نحتفظ بالبيانات فقط للمدة المطلوبة لتقديم خدماتنا والوفاء بالمتطلبات التشغيلية والتأصيل المحاسبي. نقوم بعمليات فلترة دورية لحذف سجلات التفاعل المنتهية الصلاحية بشكل آمن.
               </p>
             </div>
 
             {/* 10. Third-Party API */}
             <div 
               id="thirdparty" 
-              className="glass-panel rounded-tr-3xl rounded-bl-3xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-cyan-500/20 bg-purple-950/5"
+              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                  <Cpu className="w-5 h-5 text-purple-400" />
-                </div>
+                <Cpu className="w-5 h-5 text-amber-500 shrink-0" />
                 <div>
-                  <span className="text-[10px] font-mono text-purple-400/70 tracking-widest">MANIFEST_FILE // 10</span>
-                  <h3 className="text-xl font-bold text-white">خدمات الطرف الثالث</h3>
+                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // API_10</span>
+                  <h3 className="text-lg font-bold text-white uppercase font-serif">10. خدمات الطرف الثالث</h3>
                 </div>
               </div>
-              <p className="text-slate-300/80 leading-[1.8] text-sm md:text-base leading-relaxed font-tajawal">
-                تتكامل خدماتنا مع واجهات خارجية تابعة لمنصات أخرى مثل Discord API ومزودي خوادم الاستضافة السحابية ومزود معالجة المدفوعات Dodo Payments. ننوه بأن تلك الخدمات تخضع لسياسات خصوصية وشروط خدمة منفصلة ومستقلة تماماً عنا.
+              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans leading-relaxed">
+                يعتمد البوت والموقع على تكاملات خارجية تشمل واجهات Discord API الرسمية، بوابات الفوترة (مثل Dodo Payments)، ومزودي الاستضافة السحابية. تخضع جميع هذه المنصات لسياسات خصوصية مستقلة تماماً لا نتحمل مسؤوليتها الفنية.
               </p>
             </div>
 
             {/* 11. Children's Privacy */}
             <div 
               id="children" 
-              className="glass-panel rounded-tr-3xl rounded-bl-3xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-cyan-500/20 bg-purple-950/5"
+              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                  <ShieldAlert className="w-5 h-5 text-cyan-400" />
-                </div>
+                <ShieldAlert className="w-5 h-5 text-amber-500 shrink-0" />
                 <div>
-                  <span className="text-[10px] font-mono text-cyan-400/70 tracking-widest">MANIFEST_FILE // 11</span>
-                  <h3 className="text-xl font-bold text-white">خصوصية الأطفال والقصر</h3>
+                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // AGE_11</span>
+                  <h3 className="text-lg font-bold text-white uppercase font-serif">11. خصوصية الأطفال والقصر</h3>
                 </div>
               </div>
-              <p className="text-slate-300/80 leading-[1.8] text-sm md:text-base leading-relaxed font-tajawal">
-                المنصة وجميع الأنظمة التابعة غير موجهة للأطفال أو القصر الذين لا يسمح لهم قانونياً باستخدام الخدمات الرقمية وفق التشريعات المحلية المعمول بها (أقل من 13 عاماً). نحن لا نجمع بيانات خاصة بالبنات أو الأولاد القصر بشكل متعمد.
+              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans leading-relaxed">
+                خدمات Majestic Flux غير موجهة للأطفال أو القصر دون السن القانوني المسموح به لاستخدام التطبيقات الرقمية محلياً (عادة 13 عاماً فما دون). نحن لا نجمع عن عمد أي بيانات تخص القصر.
               </p>
             </div>
 
             {/* 12. Updates */}
             <div 
               id="updates" 
-              className="glass-panel rounded-tr-3xl rounded-bl-3xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-cyan-500/20 bg-purple-950/5"
+              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                  <HelpCircle className="w-5 h-5 text-purple-400" />
-                </div>
+                <HelpCircle className="w-5 h-5 text-amber-500 shrink-0" />
                 <div>
-                  <span className="text-[10px] font-mono text-purple-400/70 tracking-widest">MANIFEST_FILE // 12</span>
-                  <h3 className="text-xl font-bold text-white">التعديلات على السياسة</h3>
+                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // REV_12</span>
+                  <h3 className="text-lg font-bold text-white uppercase font-serif">12. التعديلات على السياسة</h3>
                 </div>
               </div>
-              <p className="text-slate-300/80 leading-[1.8] text-sm md:text-base leading-relaxed font-tajawal">
-                نحتفظ بكامل الصلاحية لتحديث أو تعديل وثيقة الخصوصية هذه في أي وقت تزامناً مع التغيرات التقنية أو التنظيمية للشركة. نوصي بمراجعة الصفحة دورياً، ويشكل استمرار استخدام خدماتنا بعد تحديثها قبولاً ضمنياً بها.
+              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans leading-relaxed">
+                نحتفظ بكامل الصلاحية لتحديث أو تعديل وثيقة سياسة الخصوصية هذه في أي وقت لمواكبة التغيرات القانونية والبرمجية. يتم نشر النسخة المحدثة على هذا الرابط وتصبح سارية فوراً، ويعتبر استمرارك باستخدام الخدمات قبولاً بها.
               </p>
             </div>
 
             {/* 13. Contact & Support */}
             <div 
               id="contact" 
-              className="glass-panel rounded-tr-3xl rounded-bl-3xl p-6 md:p-8 border border-cyan-500/30 relative overflow-hidden transition-all duration-300 hover:border-cyan-500/50 bg-cyan-950/10"
+              className="border-2 border-amber-500 bg-amber-500/5 p-6 md:p-8 relative shadow-lg"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/35 flex items-center justify-center">
-                  <Mail className="w-5 h-5 text-cyan-400" />
-                </div>
+                <Mail className="w-5 h-5 text-amber-500 shrink-0" />
                 <div>
-                  <span className="text-[10px] font-mono text-cyan-400/70 tracking-widest">MANIFEST_FILE // 13</span>
-                  <h3 className="text-xl font-bold text-white">التواصل والدعم الفني</h3>
+                  <span className="text-[9px] text-amber-500 tracking-widest block font-bold">SUB_SECTION // MSG_13</span>
+                  <h3 className="text-lg font-bold text-white uppercase font-serif">13. التواصل والدعم الفني</h3>
                 </div>
               </div>
-              <p className="text-slate-300/80 leading-[1.8] text-sm md:text-base leading-relaxed mb-6 font-tajawal">
-                إذا كانت لديك أي أسئلة متعلقة ببياناتك الخاصة أو الخصوصية، يرجى التوجه لسيرفر الدعم الفني وفتح تذكرة مباشرة مع الإدارة:
+              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans leading-relaxed mb-6">
+                إذا كان لديك أي استفسار بخصوص هذه السياسة أو رغبت في تعديل أو مراجعة بياناتك المسجلة، يرجى فتح تذكرة دعم فني في سيرفرنا الرسمي:
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 items-center justify-start">
                 <a href="https://discord.gg/weg5eGG5cr" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-                  <div className="px-6 py-3.5 rounded-xl border border-cyan-500/30 bg-cyan-950/30 text-cyan-200 text-xs font-mono font-bold hover:bg-cyan-900/20 hover:border-cyan-400 transition-all duration-300 text-center">
-                    &gt; OPEN_SUPPORT_TICKET
+                  <div className="px-5 py-3 border border-amber-500 bg-amber-500 text-black text-xs font-mono font-bold hover:bg-transparent hover:text-amber-400 transition-all duration-300 text-center">
+                    &gt; OPEN_DISCORD_TICKET
                   </div>
                 </a>
                 <Link to="/" className="w-full sm:w-auto">
-                  <div className="px-6 py-3.5 rounded-xl border border-white/5 bg-white/5 text-slate-300 text-xs font-mono hover:bg-white/10 transition-all duration-300 text-center">
-                    &gt; GO_TO_HOMEPAGE
+                  <div className="px-5 py-3 border border-white/10 bg-transparent text-slate-400 text-xs font-mono hover:text-white hover:border-white/20 transition-all duration-300 text-center">
+                    &gt; EXIT_TO_MAIN
                   </div>
                 </Link>
               </div>
@@ -542,12 +530,12 @@ const Privacy: React.FC = () => {
         </div>
 
         {/* Footer info */}
-        <div className="text-center py-12 mt-12 border-t border-purple-500/10 text-xs text-slate-500 font-mono">
-          <p className="font-semibold text-cyan-400/40 mb-2">MAJESTIC FLUX // AN INTERACTIVE PLATFORM</p>
+        <div className="text-center py-12 mt-16 border-t border-white/10 text-slate-600 text-xs font-mono">
+          <p className="font-semibold text-slate-400/40 mb-2">MAJESTIC FLUX // SECURE ARCHIVE PLATFORM</p>
           <p>HEDRIX TECHNOLOGY · ALL RIGHTS RESERVED © {new Date().getFullYear()}</p>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 
