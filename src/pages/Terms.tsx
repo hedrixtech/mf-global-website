@@ -1,139 +1,285 @@
-import React, { useEffect, useState } from 'react';
-import Layout from '../components/Layout';
-import { 
-  FileText, 
-  Scale, 
-  Copyright, 
-  Wallet, 
-  RefreshCw, 
-  CornerUpLeft, 
-  AlertTriangle, 
-  Cpu, 
-  HelpCircle, 
-  Gamepad2, 
-  Lock, 
-  ShieldCheck, 
-  MessageSquare, 
-  Settings, 
+import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  FileText,
+  Scale,
+  Copyright,
+  Wallet,
+  RefreshCw,
+  CornerUpLeft,
+  AlertTriangle,
+  Cpu,
+  HelpCircle,
+  Gamepad2,
+  Lock,
   Compass,
-  ArrowLeft,
+  MessageSquare,
+  Settings,
+  ShieldCheck,
   CheckCircle2,
-  Clock
+  ChevronRight,
+  Terminal,
+  Zap,
+  Home,
 } from 'lucide-react';
 
+/* ─────────────── design tokens ─────────────── */
+const C = {
+  surface:   '#070713',
+  surface2:  '#0B0B1A',
+  surface3:  '#12122A',
+  primary:   '#724FFF',
+  glow:      '#8B6CFF',
+  on:        '#E9ECF5',
+  muted:     '#9AA4B2',
+  success:   '#22C55E',
+  warning:   '#FBBF24',
+  error:     '#FF4D4D',
+};
+
+/* ─────────────── section list ─────────────── */
+const SECTIONS = [
+  { id: 'intro',         code: 'TOS·00', label: 'مقدمة الاتفاقية',                     icon: FileText   },
+  { id: 'fairuse',       code: 'TOS·01', label: 'الاستخدام العادل والقيود',             icon: Scale      },
+  { id: 'copyright',     code: 'TOS·02', label: 'الملكية الفكرية وحظر الهندسة العكسية', icon: Copyright  },
+  { id: 'wallet',        code: 'TOS·03', label: 'نظام الاشتراكات والمحفظة',             icon: Wallet     },
+  { id: 'updates',       code: 'TOS·04', label: 'التحديثات والتغييرات',                 icon: RefreshCw  },
+  { id: 'refunds',       code: 'TOS·05', label: 'سياسة استرداد المبالغ',               icon: CornerUpLeft },
+  { id: 'liability',     code: 'TOS·06', label: 'إخلاء المسؤولية',                     icon: AlertTriangle },
+  { id: 'commercial',    code: 'TOS·07', label: 'التخصيص التجاري',                     icon: Cpu        },
+  { id: 'support',       code: 'TOS·08', label: 'الدعم الفني وشروط الخدمة',            icon: HelpCircle },
+  { id: 'simulation',    code: 'TOS·09', label: 'المحتوى القائم على المحاكاة',          icon: Gamepad2   },
+  { id: 'safeuse',       code: 'TOS·10', label: 'حظر الاستخدام غير الآمن',             icon: Lock       },
+  { id: 'similarity',    code: 'TOS·11', label: 'إقرار عدم التعدي والتشابه',           icon: Compass    },
+  { id: 'usercontent',   code: 'TOS·12', label: 'المحتوى المولد من المستخدم',          icon: MessageSquare },
+  { id: 'regulation',    code: 'TOS·13', label: 'الرقابة وحظر الخدمة',                icon: Settings   },
+  { id: 'compatibility', code: 'TOS·14', label: 'التوافق مع Discord',                  icon: ShieldCheck },
+];
+
+/* ─────────────── sub-components ─────────────── */
+
+function StatusBar() {
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setTick(p => p + 1), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const now = new Date();
+  const ts = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+  return (
+    <div style={{ background: C.surface2, borderBottom: `1px solid ${C.primary}33` }}
+      className="sticky top-0 z-50 flex items-center justify-between px-5 py-2 text-[11px] font-mono select-none">
+      <div className="flex items-center gap-4">
+        <span style={{ color: C.primary }} className="flex items-center gap-1.5 font-semibold">
+          <Terminal className="w-3.5 h-3.5" />
+          MAJESTIC·FLUX
+        </span>
+        <span style={{ color: C.muted }}>DOC_TYPE: TERMS_OF_SERVICE</span>
+        <span style={{ color: C.muted }}>REV: 2025.1</span>
+      </div>
+      <div className="hidden sm:flex items-center gap-4">
+        <span className="flex items-center gap-1" style={{ color: C.success }}>
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block" />
+          SYSTEM ACTIVE
+        </span>
+        <span style={{ color: C.muted }}>{ts}</span>
+      </div>
+    </div>
+  );
+}
+
+interface SectionCardProps {
+  id: string;
+  code: string;
+  icon: React.ElementType;
+  title: string;
+  children: React.ReactNode;
+  accent?: 'warning' | 'error' | 'success' | 'default';
+}
+
+function SectionCard({ id, code, icon: Icon, title, children, accent = 'default' }: SectionCardProps) {
+  const accentColor = accent === 'warning' ? C.warning : accent === 'error' ? C.error : accent === 'success' ? C.success : C.primary;
+  return (
+    <div
+      id={id}
+      style={{
+        background: C.surface2,
+        borderLeft: `2px solid ${accentColor}`,
+        borderTop: `1px solid ${C.surface3}`,
+        borderRight: `1px solid ${C.surface3}`,
+        borderBottom: `1px solid ${C.surface3}`,
+        borderRadius: '10px',
+        scrollMarginTop: '80px',
+      }}
+      className="relative overflow-hidden transition-all duration-150 group hover:border-l-4"
+    >
+      {/* Corner accent */}
+      <div
+        style={{ background: `${accentColor}08`, borderBottom: `1px solid ${C.surface3}` }}
+        className="flex items-center justify-between px-5 py-3"
+      >
+        <div className="flex items-center gap-3">
+          <div style={{ background: `${accentColor}15`, borderRadius: '6px', padding: '6px' }}>
+            <Icon className="w-4 h-4" style={{ color: accentColor }} />
+          </div>
+          <div>
+            <span style={{ color: accentColor, fontSize: '10px', fontFamily: 'monospace', fontWeight: 700 }}
+              className="block tracking-widest opacity-70">
+              {code}
+            </span>
+            <h3 style={{ color: C.on, fontSize: '15px', fontWeight: 600 }}>{title}</h3>
+          </div>
+        </div>
+        <ChevronRight className="w-4 h-4 opacity-20 group-hover:opacity-60 transition-opacity" style={{ color: accentColor }} />
+      </div>
+      <div className="px-5 py-5">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function BulletList({ items }: { items: string[] }) {
+  return (
+    <div className="space-y-2 mt-3">
+      {items.map((item, i) => (
+        <div key={i} className="flex items-start gap-3"
+          style={{ background: `${C.primary}08`, borderRadius: '6px', padding: '10px 12px', border: `1px solid ${C.primary}18` }}>
+          <CheckCircle2 className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: C.primary }} />
+          <span style={{ color: C.muted, fontSize: '13px', lineHeight: '1.7' }}>{item}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function WarningBlock({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mt-4 flex items-start gap-3 rounded-md px-4 py-3"
+      style={{ background: `${C.error}10`, border: `1px solid ${C.error}30` }}>
+      <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: C.error }} />
+      <p style={{ color: `${C.on}99`, fontSize: '13px', lineHeight: '1.7' }}>{children}</p>
+    </div>
+  );
+}
+
+/* ─────────────── main page ─────────────── */
 const Terms: React.FC = () => {
-  const [visible, setVisible] = useState(false);
-  const [activeSection, setActiveSection] = useState<string>('intro');
+  const [activeSection, setActiveSection] = useState('intro');
+  const [mounted, setMounted] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setVisible(true);
-
-    const handleScroll = () => {
-      const sections = [
-        'intro', 'fairuse', 'copyright', 'wallet', 
-        'updates', 'refunds', 'liability', 'commercial', 
-        'support', 'simulation', 'safeuse', 'similarity', 
-        'usercontent', 'regulation', 'compatibility'
-      ];
-      
-      const scrollPosition = window.scrollY + 200;
-
-      for (const section of sections) {
-        const el = document.getElementById(section);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(section);
-            break;
-          }
+    setMounted(true);
+    const ids = SECTIONS.map(s => s.id);
+    const onScroll = () => {
+      const pos = window.scrollY + 160;
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && pos >= el.offsetTop && pos < el.offsetTop + el.offsetHeight) {
+          setActiveSection(id);
+          break;
         }
       }
     };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const scrollToSection = (id: string) => {
+  const scrollTo = (id: string) => {
     const el = document.getElementById(id);
-    if (el) {
-      window.scrollTo({
-        top: el.offsetTop - 100,
-        behavior: 'smooth'
-      });
-      setActiveSection(id);
-    }
+    if (el) { window.scrollTo({ top: el.offsetTop - 100, behavior: 'smooth' }); setActiveSection(id); }
   };
 
-  const sectionsList = [
-    { id: 'intro', label: 'شروط الخدمة العامة', icon: FileText },
-    { id: 'fairuse', label: '1. الاستخدام العادل', icon: Scale },
-    { id: 'copyright', label: '2. الملكية الفكرية', icon: Copyright },
-    { id: 'wallet', label: '3. الاشتراكات والمحفظة', icon: Wallet },
-    { id: 'updates', label: '4. التحديثات والتغييرات', icon: RefreshCw },
-    { id: 'refunds', label: '5. استرداد المبالغ', icon: CornerUpLeft },
-    { id: 'liability', label: '6. مسؤولية الاستخدام', icon: AlertTriangle },
-    { id: 'commercial', label: '7. التخصيص التجاري', icon: Cpu },
-    { id: 'support', label: '8. الدعم الفني', icon: HelpCircle },
-    { id: 'simulation', label: '9. المحتوى والأنظمة الواقعية', icon: Gamepad2 },
-    { id: 'safeuse', label: '10. الاستخدام الآمن للمحتوى', icon: Lock },
-    { id: 'similarity', label: '11. التشابه مع الأنظمة', icon: Compass },
-    { id: 'usercontent', label: '12. المحتوى المولد من المستخدم', icon: MessageSquare },
-    { id: 'regulation', label: '13. الرقابة والتعديلات', icon: Settings },
-    { id: 'compatibility', label: '14. التوافق مع Discord', icon: ShieldCheck }
-  ];
-
   return (
-    <Layout>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8" dir="rtl">
-        {/* Header */}
-        <section
-          className={`text-center py-12 md:py-16 transition-all duration-1000 ease-out ${
-            visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
-          <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-purple-500/20 bg-purple-900/15 text-purple-300 text-xs font-semibold mb-4">
-            <Scale className="w-3.5 h-3.5 text-purple-400" />
-            <span>اتفاقية الاستخدام والبنود القانونية</span>
-          </div>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-l from-purple-100 via-white to-purple-300 mb-4">
-            شروط الاستخدام
-          </h2>
-          <div className="flex items-center justify-center gap-2 text-purple-400/60 text-xs md:text-sm mb-6">
-            <Clock className="w-4 h-4" />
-            <span>يرجى قراءتها بدقة قبل البدء باستخدام خدماتنا</span>
-          </div>
-          <div className="h-px w-32 mx-auto bg-gradient-to-l from-transparent via-purple-500/30 to-transparent" />
-        </section>
+    <div style={{ background: C.surface, minHeight: '100vh', color: C.on, fontFamily: 'Inter, sans-serif' }} dir="rtl">
 
-        {/* Main Content Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Right Column: Sticky Navigation Index (Desktop Only) */}
-          <aside className="hidden lg:block lg:col-span-4 sticky top-28 max-h-[80vh] overflow-y-auto scrollbar-custom pr-1">
-            <div className="glass-panel rounded-2xl p-6 border border-white/5 shadow-md">
-              <h3 className="text-lg font-bold text-purple-200 mb-4 border-b border-purple-500/10 pb-3 flex items-center gap-2">
-                <FileText className="w-4.5 h-4.5 text-purple-400" />
-                البنود والأقسام
-              </h3>
-              <nav className="space-y-1">
-                {sectionsList.map((item) => {
-                  const Icon = item.icon;
-                  const active = activeSection === item.id;
+      {/* grid noise texture */}
+      <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.03]"
+        style={{ backgroundImage: `linear-gradient(${C.primary} 1px, transparent 1px), linear-gradient(90deg, ${C.primary} 1px, transparent 1px)`, backgroundSize: '48px 48px' }} />
+
+      {/* purple glow blobs */}
+      <div className="pointer-events-none fixed top-0 right-0 w-[600px] h-[600px] opacity-[0.04] rounded-full blur-[120px] z-0"
+        style={{ background: C.primary }} />
+      <div className="pointer-events-none fixed bottom-0 left-0 w-[500px] h-[500px] opacity-[0.03] rounded-full blur-[120px] z-0"
+        style={{ background: C.glow }} />
+
+      <div className="relative z-10">
+        <StatusBar />
+
+        {/* ── Page Header ── */}
+        <header className="max-w-7xl mx-auto px-4 sm:px-8 pt-12 pb-10">
+          <div className="flex items-center gap-2 mb-6" style={{ color: C.muted, fontSize: '12px', fontFamily: 'monospace' }}>
+            <Link to="/" className="flex items-center gap-1.5 hover:text-white transition-colors">
+              <Home className="w-3.5 h-3.5" />
+              الرئيسية
+            </Link>
+            <span>/</span>
+            <span style={{ color: C.primary }}>شروط الاستخدام</span>
+          </div>
+
+          <div style={{ borderLeft: `3px solid ${C.primary}`, paddingRight: '20px' }}
+            className={`transition-all duration-700 ${mounted ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}>
+            <div className="flex items-center gap-3 mb-3">
+              <div style={{ background: `${C.primary}20`, borderRadius: '8px', padding: '8px' }}>
+                <Scale className="w-5 h-5" style={{ color: C.primary }} />
+              </div>
+              <span style={{ color: C.primary, fontSize: '11px', fontFamily: 'monospace', fontWeight: 700 }}
+                className="tracking-widest">LEGAL · TERMS OF SERVICE · V2025.1</span>
+            </div>
+            <h1 style={{ fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: 800, color: C.on, lineHeight: 1.15 }}>
+              شروط الاستخدام
+            </h1>
+            <p style={{ color: C.muted, fontSize: '14px', marginTop: '10px', maxWidth: '560px', lineHeight: 1.7 }}>
+              اتفاقية قانونية ملزمة بين المستخدم وشركة Hedrix Technology. استخدامك للخدمة يعني موافقتك الكاملة على هذه البنود.
+            </p>
+            <div className="flex items-center gap-4 mt-5 flex-wrap">
+              <div style={{ background: `${C.success}15`, border: `1px solid ${C.success}40`, borderRadius: '6px' }}
+                className="flex items-center gap-1.5 px-3 py-1.5">
+                <Zap className="w-3 h-3" style={{ color: C.success }} />
+                <span style={{ color: C.success, fontSize: '11px', fontWeight: 600, fontFamily: 'monospace' }}>14 SECTIONS ACTIVE</span>
+              </div>
+              <div style={{ background: `${C.primary}15`, border: `1px solid ${C.primary}40`, borderRadius: '6px' }}
+                className="flex items-center gap-1.5 px-3 py-1.5">
+                <span style={{ color: C.primary, fontSize: '11px', fontFamily: 'monospace' }}>آخر تحديث: 2025</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* ── Body ── */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 pb-20 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+          {/* ─ Sidebar ─ */}
+          <aside ref={sidebarRef} className="hidden lg:block lg:col-span-4 sticky top-16 max-h-[calc(100vh-80px)] overflow-y-auto">
+            <div style={{ background: C.surface2, border: `1px solid ${C.surface3}`, borderRadius: '10px', padding: '6px' }}>
+              <div style={{ borderBottom: `1px solid ${C.surface3}`, padding: '12px 14px', marginBottom: '4px' }}
+                className="flex items-center gap-2">
+                <FileText className="w-3.5 h-3.5" style={{ color: C.primary }} />
+                <span style={{ color: C.muted, fontSize: '11px', fontFamily: 'monospace', fontWeight: 700 }} className="tracking-wider">
+                  SECTION INDEX
+                </span>
+              </div>
+              <nav className="space-y-0.5">
+                {SECTIONS.map(s => {
+                  const Icon = s.icon;
+                  const active = activeSection === s.id;
                   return (
-                    <button
-                      key={item.id}
-                      onClick={() => scrollToSection(item.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 text-right text-sm rounded-xl transition-all duration-300 ${
-                        active 
-                          ? 'bg-purple-500/15 text-purple-200 border-r-4 border-purple-500 font-bold' 
-                          : 'text-purple-300/60 hover:text-purple-200 hover:bg-white/5 border-r-4 border-transparent'
-                      }`}
+                    <button key={s.id} onClick={() => scrollTo(s.id)}
+                      style={{
+                        width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
+                        padding: '9px 12px', borderRadius: '7px', textAlign: 'right',
+                        background: active ? `${C.primary}18` : 'transparent',
+                        borderRight: active ? `2px solid ${C.primary}` : '2px solid transparent',
+                        transition: 'all 0.15s ease', cursor: 'pointer', border: 'none',
+                      }}
+                      className="hover:bg-white/5 group"
                     >
-                      <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-purple-400' : 'text-purple-500/40'}`} />
-                      <span className="truncate">{item.label}</span>
-                      {active && <ArrowLeft className="w-3.5 h-3.5 mr-auto text-purple-400" />}
+                      <Icon className="w-3.5 h-3.5 shrink-0" style={{ color: active ? C.primary : C.muted, opacity: active ? 1 : 0.5 }} />
+                      <span style={{ color: active ? C.on : C.muted, fontSize: '12px', flex: 1, fontWeight: active ? 600 : 400 }}
+                        className="truncate text-right">{s.label}</span>
+                      <span style={{ color: active ? C.primary : 'transparent', fontSize: '9px', fontFamily: 'monospace', fontWeight: 700 }}
+                        className="shrink-0">{s.code}</span>
                     </button>
                   );
                 })}
@@ -141,280 +287,185 @@ const Terms: React.FC = () => {
             </div>
           </aside>
 
-          {/* Left Column: Content Panels */}
-          <div className="lg:col-span-8 space-y-6">
-            
-            {/* Intro Section */}
-            <div 
-              id="intro" 
-              className="glass-panel rounded-2xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-purple-500/20"
-            >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl pointer-events-none" />
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <FileText className="w-6 h-6 text-purple-400" />
-                  <h3 className="text-xl font-bold text-purple-100">مقدمة الاتفاقية</h3>
-                </div>
-                <p className="text-purple-200/80 leading-[1.8] text-base">
-                  تعتبر هذه الشروط والبنود اتفاقية قانونية ملزمة بالكامل وثنائية الطرف تسري مباشرة بين المستخدم (ويشار إليه بـ «المستخدم» أو «المستفيد») وإدارة Majestic Flux وشركة Hedrix Technology (ويشار إليها بـ «الإدارة» أو «الشركة»). بمجرد تفعيل البوت أو استخدامه بأي شكل من الأشكال، فإنك تقر إقراراً تاماً وباتااً وبدون أي تحفظ باطلاعك وموافقتك الكاملة على كافة البنود والشروط الواردة في هذه الوثيقة. إذا كنت لا توافق على هذه البنود أو أي جزء منها، فيتعين عليك فوراً إيقاف استخدام الخدمة وإزالة البوت من خادمك.
-                </p>
-              </div>
-            </div>
+          {/* ─ Content ─ */}
+          <div className="lg:col-span-8 space-y-4">
 
-            {/* 1. Fair Use */}
-            <div 
-              id="fairuse" 
-              className="glass-panel rounded-2xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-purple-500/20"
-            >
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <Scale className="w-6 h-6 text-purple-400" />
-                  <h3 className="text-xl font-bold text-purple-100">1. الاستخدام العادل والقيود</h3>
-                </div>
-                <p className="text-purple-200/80 leading-[1.8] text-base">
-                  يُحظر تماماً وبشكل قطعي استخدام البوت في أي أنشطة تنتهك قوانين مكافحة الجرائم المعلوماتية أو شروط خدمة منصة Discord الرسمية. يلتزم المستخدم التزاماً مطلقاً بعدم استغلال البوت لإرسال الرسائل المزعجة (Spamming)، أو محاولات إغراق خوادم الاستضافة بأوامر متكررة (DDoS)، أو استغلال الثغرات الفنية والبرمجية (Exploits) بدلاً من الإبلاغ عنها. أي محاولة للتلاعب بنظام البوت أو إدخال برمجيات خبيثة ستؤدي إلى حظر المستخدم والمنشأة أو الخادم (Guild) بالكامل بشكل دائم ومباشر دون سابق إنذار، مع الاحتفاظ بكامل الحقوق القانونية في المقاضاة والمطالبة بالتعويضات.
-                </p>
-              </div>
-            </div>
-
-            {/* 2. Intellectual Property */}
-            <div 
-              id="copyright" 
-              className="glass-panel rounded-2xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-purple-500/20"
-            >
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <Copyright className="w-6 h-6 text-purple-400" />
-                  <h3 className="text-xl font-bold text-purple-100">2. الملكية الفكرية وحظر الهندسة العكسية</h3>
-                </div>
-                <p className="text-purple-200/80 leading-[1.8] text-base">
-                  كافة الحقوق الفكرية، وحقوق الطبع والنشر، والأكواد المصدرية (Source Code)، والتصاميم الرسومية، والواجهات، وقواعد البيانات، والعلامات التجارية والأسماء والشعارات الخاصة ببوت Majestic Flux هي ملكية حصرية وخالصة لشركة Hedrix Technology. يُمنع منعاً باتاً تحت طائلة المسؤولية القانونية الكاملة: نسخ، أو إعادة توزيع، أو محاولة فك تشفير، أو إجراء هندسة عكسية (Reverse Engineering)، أو تفكيك (Decompiling)، أو سرقة أفكار أو خوارزميات النظام، أو تشغيل نسخ معدلة شبيهة أو موازية. أي محاولة لتقليد الخدمات أو بيع كود البوت بدون ترخيص كتابي صريح ومبرم بعقد رسمي ستواجه بإجراءات قانونية صارمة وطلب تعويضات مالية طائلة.
-                </p>
-              </div>
-            </div>
-
-            {/* 3. Subscription & Wallet */}
-            <div 
-              id="wallet" 
-              className="glass-panel rounded-2xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-purple-500/20"
-            >
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <Wallet className="w-6 h-6 text-purple-400" />
-                  <h3 className="text-xl font-bold text-purple-100">3. نظام الاشتراكات، المحفظة والعملة الافتراضية</h3>
-                </div>
-                <p className="text-purple-200/80 leading-[1.8] text-base mb-4">
-                  يقدم Majestic Flux نظاماً رقمياً لتقمص الأدوار وإدارة استهلاك الأوامر يعتمد على رصيد افتراضي يسمى «Flux». يُقر المستخدم ويوافق على ما يلي:
-                </p>
-                <div className="space-y-3">
-                  {[
-                    'رصيد Flux هو أصل افتراضي مخصص للترفيه واللعب التخيلي فقط داخل منصة Discord.',
-                    'لا يحمل رصيد Flux أي قيمة مالية حقيقية، ولا يعتبر شكلاً من أشكال العملات الحقيقية أو السندات المالية، ويُحظر تماماً بيعه، أو شراؤه، أو مبادلته بأموال حقيقية خارج النطاق الرسمي.',
-                    'يحق للشركة تعديل، أو إعادة تعيين، أو خصم، أو إلغاء أرصدة Flux في أي وقت لأغراض الصيانة، أو تغيير هيكلية التسعير، أو عند الاشتباه بوجود تلاعب أو غش، وذلك دون أن يترتب على الشركة أي التزام مالي أو قانوني بالتعويض.',
-                    'يتم خصم رصيد Flux تلقائياً عند تنفيذ الأوامر بنجاح بناءً على استهلاك موارد الخادم ونوع العملية الفنية المطلوبة.'
-                  ].map((text, i) => (
-                    <div key={i} className="flex items-start gap-2.5 p-3 rounded-xl bg-purple-950/20 border border-purple-500/10 text-purple-200/70 text-sm">
-                      <CheckCircle2 className="w-4.5 h-4.5 text-purple-400 shrink-0 mt-0.5" />
-                      <span>{text}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* 4. Updates */}
-            <div 
-              id="updates" 
-              className="glass-panel rounded-2xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-purple-500/20"
-            >
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <RefreshCw className="w-6 h-6 text-purple-400" />
-                  <h3 className="text-xl font-bold text-purple-100">4. التحديثات والتغييرات أحادية الجانب</h3>
-                </div>
-                <p className="text-purple-200/80 leading-[1.8] text-base">
-                  تحتفظ شركة Hedrix Technology بالحق المطلق وغير المقيد في تعديل، أو إيقاف، أو استبدال، أو تحديث أي من ميزات البوت، أو باقات الأسعار، أو قيم استهلاك الأوامر لعملة Flux، أو هذه الاتفاقية في أي وقت تراه مناسباً ودون الحاجة لإرسال إشعار مسبق. يسري مفعول التعديلات فور نشرها على الموقع الرسمي أو خادم الدعم. استمرارك في استخدام البوت بعد إجراء هذه التعديلات يمثل موافقة صريحة ونهائية من قبلك عليها.
-                </p>
-              </div>
-            </div>
-
-            {/* 5. Refunds */}
-            <div 
-              id="refunds" 
-              className="glass-panel rounded-2xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-purple-500/20"
-            >
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <CornerUpLeft className="w-6 h-6 text-purple-400" />
-                  <h3 className="text-xl font-bold text-purple-100">5. سياسة استرداد المبالغ الصارمة والنهائية</h3>
-                </div>
-                <p className="text-purple-200/80 leading-[1.8] text-base">
-                  تخضع كافة عمليات الدفع، والاشتراكات، وشحن أرصدة Flux لسياسة عدم الاسترداد المطلقة (Strict Zero-Refund Policy). بمجرد إتمام عملية الشراء أو الشحن، يُعتبر الدفع نهائياً وقطيعاً وغير قابل للإلغاء أو الاسترجاع تحت أي ظرف من الظروف، بما في ذلك: توقف الخدمة المؤقت، أو حظر حساب المستخدم أو سيرفره بسبب مخالفة الشروط، أو رغبة المستخدم في التراجع. لا توجد استثناءات لهذه السياسة إلا إذا قررت الشركة بمحض إرادتها المنفردة والخاصة وجود خطأ تقني جسيم ومؤكد من جهتنا لا يمكن حله.
-                </p>
-              </div>
-            </div>
-
-            {/* 6. Liability */}
-            <div 
-              id="liability" 
-              className="glass-panel rounded-2xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-purple-500/20"
-            >
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <AlertTriangle className="w-6 h-6 text-purple-400" />
-                  <h3 className="text-xl font-bold text-purple-100">6. إخلاء المسؤولية المطلق وحدود المسؤولية القانونية</h3>
-                </div>
-                <p className="text-purple-200/80 leading-[1.8] text-base">
-                  يُقدم بوت Majestic Flux «كما هو» (As Is) و«حسب توفره» (As Available)، دون أي ضمانات من أي نوع، سواء كانت صريحة أو ضمنية. لا تتحمل شركة Hedrix Technology أو مطوروها أي مسؤولية قانونية أو مالية أو أدبية عن أي أضرار مباشرة، أو غير مباشرة، أو عرضية، أو تبعية ناتجة عن استخدام أو عدم القدرة على استخدام البوت، بما في ذلك: فقدان البيانات، أو تلف إعدادات السيرفر، أو تعطل خوادم البوت، أو التغييرات المفاجئة في سياسات شركة Discord، أو انقطاع الخدمة الكهربائية أو الفنية لخوادم الاستضافة. يقع كامل عبء المخاطرة والتشغيل على عاتق المستخدم.
-                </p>
-              </div>
-            </div>
-
-            {/* 7. Commercial */}
-            <div 
-              id="commercial" 
-              className="glass-panel rounded-2xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-purple-500/20"
-            >
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <Cpu className="w-6 h-6 text-purple-400" />
-                  <h3 className="text-xl font-bold text-purple-100">7. التخصيص التجاري والنسخ الخاصة</h3>
-                </div>
-                <p className="text-purple-200/80 leading-[1.8] text-base">
-                  يتطلب الحصول على نسخة مخصصة من البوت تحمل هوية وشعار خادم محدد (Rebranding/Custom Bot) تسديد رسوم دورية ثابتة تحددها الشركة، وتخضع البوتات المخصصة لكافة الشروط والأحكام الواردة هنا. يُحظر تماماً فك الترابط بين النسخة المخصصة والخادم الأصلي للشركة، كما يُحظر بيع أو تأجير النسخة المخصصة لأطراف ثالثة. تحتفظ الشركة بحق إلغاء ترخيص أي نسخة مخصصة فوراً إذا ثبت استخدامها في أغراض تضر بسمعة Majestic Flux أو تخالف هذه الشروط.
-                </p>
-              </div>
-            </div>
-
-            {/* 8. Support */}
-            <div 
-              id="support" 
-              className="glass-panel rounded-2xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-purple-500/20"
-            >
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <HelpCircle className="w-6 h-6 text-purple-400" />
-                  <h3 className="text-xl font-bold text-purple-100">8. الدعم الفني وشروط الخدمة</h3>
-                </div>
-                <p className="text-purple-200/80 leading-[1.8] text-base">
-                  تلتزم إدارة Majestic Flux بتقديم الدعم الفني لحل المشكلات التقنية المتعلقة بالبنية التحتية للبوت حصرياً عبر خادم Discord الرسمي التابع للشركة. لا تقدم الشركة أي ضمانات بشأن وقت الاستجابة (SLA) أو حل المشكلات في وقت محدد. يُشترط للحصول على الدعم الفني التزام العضو بالاحترام والآداب العامة؛ وأي إساءة، أو تطاول، أو تهديد يوجه لفريق الدعم أو الإدارة سيعرض صاحبه للحظر المباشر والدائم من البوت ومن خادم الدعم مع إلغاء كافة أرصدته واشتراكاته دون أي تعويض أو حق في المطالبة.
-                </p>
-              </div>
-            </div>
-
-            {/* 9. Simulation */}
-            <div 
-              id="simulation" 
-              className="glass-panel rounded-2xl p-6 md:p-8 border border-purple-500/10 relative overflow-hidden transition-all duration-300 hover:border-purple-500/20 bg-purple-950/10"
-            >
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <Gamepad2 className="w-6 h-6 text-purple-400" />
-                  <h3 className="text-xl font-bold text-purple-100">9. المحتوى القائم على المحاكاة والأنظمة الافتراضية</h3>
-                </div>
-                <p className="text-purple-200/80 leading-[1.8] text-base">
-                  يشتمل البوت على ميزات وأوامر برمجية تحاكي سيناريوهات واقعية وتفاعلية مثل: أنظمة السجل المدني، البطاقات الشخصية الافتراضية، وزارة الداخلية والشرطة الافتراضية، المحاكم والأنظمة البنكية، والأسواق المفتوحة والمزايدات. يُقر المستخدم إقراراً تاماً بأن كل هذه الميزات هي للتسلية واللعب الافتراضي فقط داخل خوادم Discord، ولا تمثل بأي حال من الأحوال أي جهة حكومية، أو أمنية، أو عسكرية، أو مصرفية حقيقية. يُحظر تماماً استخدام هذه الواجهات لإشاعة الفوضى أو الإيحاء للعامة بصلة البوت بجهات رسمية واقعية.
-                </p>
-              </div>
-            </div>
-
-            {/* 10. Safe Use */}
-            <div 
-              id="safeuse" 
-              className="glass-panel rounded-2xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-purple-500/20"
-            >
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <Lock className="w-6 h-6 text-purple-400" />
-                  <h3 className="text-xl font-bold text-purple-100">10. حظر الاستخدام غير الآمن والاحتيالي للمحتوى</h3>
-                </div>
-                <p className="text-purple-200/80 leading-[1.8] text-base">
-                  يُحظر تماماً استخدام أنظمة المحاكاة الترفيهية في البوت للقيام بأي عمليات احتيال، أو خداع للأعضاء، أو الترويج لخدمات غير قانونية في العالم الواقعي. يُمنع منعاً باتاً كتابة أسماء شخصيات حقيقية، أو رموز وطنية، أو علامات تجارية محمية في بطاقات الهوية الافتراضية أو القضايا الافتراضية بغرض التشهير، أو المضايقة، أو الابتزاز، أو التحرش. يتحمل مالك السيرفر والمستخدم المسؤولية الجنائية الكاملة عن أي محتوى مسيء يتم إنشاؤه عبر البوت.
-                </p>
-              </div>
-            </div>
-
-            {/* 11. Similarity */}
-            <div 
-              id="similarity" 
-              className="glass-panel rounded-2xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-purple-500/20"
-            >
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <Compass className="w-6 h-6 text-purple-400" />
-                  <h3 className="text-xl font-bold text-purple-100">11. إقرار عدم التعدي والتشابه البرمجي</h3>
-                </div>
-                <p className="text-purple-200/80 leading-[1.8] text-base">
-                  قد تتشابه أفكار البوت مع بعض أنظمة ألعاب المحاكاة الشهيرة (مثل FiveM أو GTA Roleplay)، إلا أن Majestic Flux هو نظام برمجي مستقل ومطور بالكامل من الصفر. كافة الأكواد، والخوارزميات، والواجهات النصية، وقواعد البيانات تم إنشاؤها وتطويرها بشكل فريد وحصري لمنصة Discord. أي تشابه في المصطلحات أو المفاهيم هو لغرض محاكاة الطابع العام لتقمص الأدوار فقط ولا يمثل تعدياً على حقوق أي طرف ثالث.
-                </p>
-              </div>
-            </div>
-
-            {/* 12. User Content */}
-            <div 
-              id="usercontent" 
-              className="glass-panel rounded-2xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-purple-500/20"
-            >
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <MessageSquare className="w-6 h-6 text-purple-400" />
-                  <h3 className="text-xl font-bold text-purple-100">12. المسؤولية المطلقة للمحتوى المولد من المستخدم</h3>
-                </div>
-                <p className="text-purple-200/80 leading-[1.8] text-base">
-                  يتحمل المستخدمون وإدارات خوادم Discord المسؤولية الكاملة والمنفردة عن كافة النصوص، والبيانات، والأخبار، والجرائم الافتراضية، والمعلومات التي يقومون بإدخالها وتداولها عبر البوت. لا تقوم شركة Hedrix Technology بمراقبة البيانات المدخلة بشكل استباقي، ولكنها تمتلك الصلاحية المطلقة في حذف أو تعديل أي محتوى مخالف، أو حظر الخادم المخالف بالكامل من الوصول إلى خدمات البوت عند تلقي بلاغات مؤكدة بوجود انتهاكات قانونية أو أخلاقية.
-                </p>
-              </div>
-            </div>
-
-            {/* 13. Regulation */}
-            <div 
-              id="regulation" 
-              className="glass-panel rounded-2xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-purple-500/20"
-            >
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <Settings className="w-6 h-6 text-purple-400" />
-                  <h3 className="text-xl font-bold text-purple-100">13. الرقابة وحظر الخدمة المطلق ودون سابق إنذار</h3>
-                </div>
-                <p className="text-purple-200/80 leading-[1.8] text-base">
-                  تحتفظ إدارة Majestic Flux بالحق المطلق وبمحض إرادتها في فرض الرقابة، وتقييد، أو إلغاء، أو تعليق، أو حظر أي مستخدم أو سيرفر (Blacklist) من استخدام البوت بشكل جزئي أو كلي، في أي وقت ولأي سبب تراه مناسباً لحماية سلامة واستقرار النظام ومصالح الشركة. لا تلتزم الإدارة بتقديم أي تبريرات، أو أدلة، أو إشعارات مسبقة للمستخدم أو مالك السيرفر قبل اتخاذ قرار الحظر، ولا يحق للمحظور المطالبة بأي تعويض مالي أو استرداد للمبالغ المدفوعة.
-                </p>
-              </div>
-            </div>
-
-            {/* 14. Compatibility */}
-            <div 
-              id="compatibility" 
-              className="glass-panel rounded-2xl p-6 md:p-8 border border-white/5 relative overflow-hidden transition-all duration-300 hover:border-purple-500/20"
-            >
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <ShieldCheck className="w-6 h-6 text-purple-400" />
-                  <h3 className="text-xl font-bold text-purple-100">14. التوافق التام مع سياسات منصة Discord</h3>
-                </div>
-                <p className="text-purple-200/80 leading-[1.8] text-base">
-                  يعتمد تشغيل Majestic Flux كلياً على بيئة وتوافق واجهات برمجة تطبيقات Discord (Discord API). يقر المستخدم بأن أي تغييرات في سياسات Discord أو قيودها البرمجية قد تؤثر على عمل البوت أو تؤدي إلى توقف بعض ميزاته أو الخدمة بأكملها بشكل مؤقت أو دائم. في حال حدوث ذلك، لا تتحمل الشركة أي مسؤولية تجاه المستخدمين أو المشتركين، ويُحظر استغلال البوت في أي محاولات لتخطي قيود Discord أو انتهاك شروطهم الرسمية.
-                </p>
-              </div>
-            </div>
-
-            {/* Closing consent */}
-            <div className="p-6 rounded-2xl bg-purple-950/20 border border-purple-500/10 text-center">
-              <p className="text-purple-200/80 text-sm md:text-base leading-[1.8]">
-                باستخدامك المستمر لخدمات وبوت Majestic Flux، فإنك تؤكد اطلاعك التام وموافقتك الصريحة والنهائية على كافة شروط الخدمة المذكورة أعلاه، وتتفهم أن أي إخلال بها سيعرض حسابك أو سيرفرك للحظر الدائم والإدراج في القائمة السوداء للنظام مع التنازل عن كافة مستحقاتك الافتراضية.
+            <SectionCard id="intro" code="TOS·00" icon={FileText} title="مقدمة الاتفاقية">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                تعتبر هذه الشروط والبنود اتفاقية قانونية ملزمة بالكامل وثنائية الطرف تسري مباشرة بين المستخدم وإدارة Majestic Flux وشركة Hedrix Technology.
+                بمجرد تفعيل البوت أو استخدامه بأي شكل من الأشكال، فإنك تقر إقراراً تاماً بموافقتك الكاملة على كافة البنود الواردة هنا.
               </p>
+              <WarningBlock>إذا كنت لا توافق على هذه البنود أو أي جزء منها، فيتعين عليك فوراً إيقاف الاستخدام وإزالة البوت من خادمك.</WarningBlock>
+            </SectionCard>
+
+            <SectionCard id="fairuse" code="TOS·01" icon={Scale} title="الاستخدام العادل والقيود">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                يُحظر تماماً استخدام البوت في أي أنشطة تنتهك قوانين مكافحة الجرائم المعلوماتية أو شروط خدمة منصة Discord الرسمية.
+              </p>
+              <BulletList items={[
+                'يُمنع إرسال الرسائل المزعجة (Spamming) أو محاولات إغراق الخوادم بأوامر متكررة (DDoS).',
+                'يُمنع استغلال الثغرات الفنية والبرمجية (Exploits) بدلاً من الإبلاغ عنها للفريق.',
+                'أي محاولة للتلاعب بنظام البوت تؤدي إلى حظر دائم دون سابق إنذار.',
+              ]} />
+            </SectionCard>
+
+            <SectionCard id="copyright" code="TOS·02" icon={Copyright} title="الملكية الفكرية وحظر الهندسة العكسية">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8, marginBottom: '12px' }}>
+                كافة الحقوق الفكرية والأكواد المصدرية والتصاميم والعلامات التجارية الخاصة ببوت Majestic Flux هي ملكية حصرية لشركة Hedrix Technology.
+              </p>
+              <BulletList items={[
+                'يُمنع نسخ أو إعادة توزيع أو فك تشفير أو إجراء هندسة عكسية على النظام.',
+                'يُمنع تشغيل نسخ معدلة شبيهة أو موازية من البوت.',
+                'أي تعدٍّ على حقوق الملكية الفكرية يُواجه بإجراءات قانونية وتعويضات مالية.',
+              ]} />
+            </SectionCard>
+
+            <SectionCard id="wallet" code="TOS·03" icon={Wallet} title="نظام الاشتراكات، المحفظة والعملة الافتراضية">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                يقدم Majestic Flux نظاماً رقمياً يعتمد على رصيد افتراضي يسمى «Flux». يُقر المستخدم ويوافق على:
+              </p>
+              <BulletList items={[
+                'رصيد Flux هو أصل افتراضي مخصص للترفيه فقط داخل منصة Discord.',
+                'لا يحمل رصيد Flux أي قيمة مالية حقيقية ولا يعتبر عملة قابلة للبيع أو التبادل خارج النطاق الرسمي.',
+                'يحق للشركة تعديل أو إلغاء أرصدة Flux دون أي التزام مالي بالتعويض.',
+                'يتم خصم الرصيد تلقائياً عند تنفيذ الأوامر بنجاح بناءً على استهلاك الموارد.',
+              ]} />
+            </SectionCard>
+
+            <SectionCard id="updates" code="TOS·04" icon={RefreshCw} title="التحديثات والتغييرات أحادية الجانب">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                تحتفظ شركة Hedrix Technology بالحق المطلق في تعديل أو إيقاف أو استبدال أي من ميزات البوت أو باقات الأسعار أو هذه الاتفاقية في أي وقت دون الحاجة لإشعار مسبق.
+                يسري مفعول التعديلات فور نشرها، واستمرارك في الاستخدام يمثل موافقة صريحة عليها.
+              </p>
+            </SectionCard>
+
+            <SectionCard id="refunds" code="TOS·05" icon={CornerUpLeft} title="سياسة استرداد المبالغ الصارمة" accent="error">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                تخضع كافة عمليات الدفع والاشتراكات وشحن أرصدة Flux لسياسة عدم الاسترداد المطلقة.
+              </p>
+              <WarningBlock>
+                بمجرد إتمام عملية الشراء يُعتبر الدفع نهائياً وغير قابل للإلغاء أو الاسترجاع تحت أي ظرف — بما في ذلك توقف الخدمة المؤقت أو حظر الحساب بسبب مخالفة الشروط. لا توجد استثناءات لهذه السياسة إلا إذا قررت الشركة وجود خطأ تقني جسيم مؤكد من جهتنا.
+              </WarningBlock>
+            </SectionCard>
+
+            <SectionCard id="liability" code="TOS·06" icon={AlertTriangle} title="إخلاء المسؤولية المطلق" accent="warning">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                يُقدم بوت Majestic Flux «كما هو» (As Is) و«حسب توفره» (As Available)، دون أي ضمانات من أي نوع.
+              </p>
+              <WarningBlock>
+                لا تتحمل شركة Hedrix Technology أي مسؤولية قانونية أو مالية عن أي أضرار ناتجة عن استخدام البوت، بما في ذلك فقدان البيانات أو تلف إعدادات السيرفر أو انقطاع الخدمة. يقع كامل عبء المخاطرة على عاتق المستخدم.
+              </WarningBlock>
+            </SectionCard>
+
+            <SectionCard id="commercial" code="TOS·07" icon={Cpu} title="التخصيص التجاري والنسخ الخاصة">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                يتطلب الحصول على نسخة مخصصة من البوت تحمل هوية وشعار خادم محدد تسديد رسوم دورية ثابتة تحددها الشركة.
+              </p>
+              <BulletList items={[
+                'يُحظر فك الترابط بين النسخة المخصصة والخادم الأصلي للشركة.',
+                'يُحظر بيع أو تأجير النسخة المخصصة لأطراف ثالثة.',
+                'تحتفظ الشركة بحق إلغاء ترخيص أي نسخة مخصصة فوراً عند مخالفة الشروط.',
+              ]} />
+            </SectionCard>
+
+            <SectionCard id="support" code="TOS·08" icon={HelpCircle} title="الدعم الفني وشروط الخدمة">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                تلتزم إدارة Majestic Flux بتقديم الدعم الفني عبر خادم Discord الرسمي حصرياً. لا تُقدم الشركة ضمانات بشأن وقت الاستجابة.
+              </p>
+              <WarningBlock>
+                أي إساءة أو تطاول أو تهديد يوجَّه لفريق الدعم يعرض صاحبه للحظر الدائم مع إلغاء جميع أرصدته واشتراكاته دون أي تعويض.
+              </WarningBlock>
+            </SectionCard>
+
+            <SectionCard id="simulation" code="TOS·09" icon={Gamepad2} title="المحتوى القائم على المحاكاة والأنظمة الافتراضية">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                يشتمل البوت على ميزات تحاكي سيناريوهات واقعية كأنظمة السجل المدني والمحاكم الافتراضية والأسواق.
+              </p>
+              <WarningBlock>
+                يُقر المستخدم بأن كل هذه الميزات هي للتسلية الافتراضية فقط ولا تمثل أي جهة حكومية أو أمنية حقيقية. يُحظر استخدامها لإيهام العامة بصلة البوت بجهات رسمية.
+              </WarningBlock>
+            </SectionCard>
+
+            <SectionCard id="safeuse" code="TOS·10" icon={Lock} title="حظر الاستخدام غير الآمن والاحتيالي">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                يُحظر استخدام أنظمة المحاكاة في البوت للقيام بأي عمليات احتيال أو خداع أو الترويج لخدمات غير قانونية.
+              </p>
+              <BulletList items={[
+                'يُمنع كتابة أسماء شخصيات حقيقية أو رموز وطنية في البطاقات الافتراضية بغرض التشهير.',
+                'يتحمل مالك السيرفر والمستخدم المسؤولية الجنائية الكاملة عن أي محتوى مسيء.',
+              ]} />
+            </SectionCard>
+
+            <SectionCard id="similarity" code="TOS·11" icon={Compass} title="إقرار عدم التعدي والتشابه البرمجي">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                قد تتشابه أفكار البوت مع بعض أنظمة ألعاب المحاكاة الشهيرة، إلا أن Majestic Flux هو نظام برمجي مستقل مطور بالكامل من الصفر لمنصة Discord.
+                كافة الأكواد والخوارزميات والواجهات تم إنشاؤها بشكل فريد وحصري.
+              </p>
+            </SectionCard>
+
+            <SectionCard id="usercontent" code="TOS·12" icon={MessageSquare} title="المسؤولية المطلقة للمحتوى المولد من المستخدم">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                يتحمل المستخدمون وإدارات خوادم Discord المسؤولية الكاملة عن كافة النصوص والبيانات التي يقومون بإدخالها عبر البوت.
+                تمتلك الشركة الصلاحية المطلقة في حذف أي محتوى مخالف أو حظر الخادم المخالف بالكامل.
+              </p>
+            </SectionCard>
+
+            <SectionCard id="regulation" code="TOS·13" icon={Settings} title="الرقابة وحظر الخدمة المطلق" accent="error">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                تحتفظ إدارة Majestic Flux بالحق المطلق في فرض الرقابة وتقييد أو حظر أي مستخدم أو سيرفر في أي وقت لأي سبب.
+              </p>
+              <WarningBlock>
+                لا تلتزم الإدارة بتقديم تبريرات أو إشعارات مسبقة قبل اتخاذ قرار الحظر، ولا يحق للمحظور المطالبة بأي تعويض أو استرداد للمبالغ المدفوعة.
+              </WarningBlock>
+            </SectionCard>
+
+            <SectionCard id="compatibility" code="TOS·14" icon={ShieldCheck} title="التوافق التام مع سياسات منصة Discord" accent="success">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                يعتمد تشغيل Majestic Flux على بيئة Discord API. يقر المستخدم بأن أي تغييرات في سياسات Discord قد تؤثر على عمل البوت.
+                في حال حدوث ذلك، لا تتحمل الشركة أي مسؤولية، ويُحظر استغلال البوت لتخطي قيود Discord.
+              </p>
+            </SectionCard>
+
+            {/* ── Consent Block ── */}
+            <div style={{ background: `${C.primary}12`, border: `1px solid ${C.primary}30`, borderRadius: '10px', padding: '24px' }}
+              className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <ShieldCheck className="w-5 h-5" style={{ color: C.primary }} />
+                <span style={{ color: C.primary, fontWeight: 700, fontSize: '14px', fontFamily: 'monospace' }}>CONSENT REQUIRED</span>
+              </div>
+              <p style={{ color: C.muted, fontSize: '13px', lineHeight: 1.8, maxWidth: '600px', margin: '0 auto' }}>
+                باستخدامك المستمر لخدمات وبوت Majestic Flux، فإنك تؤكد اطلاعك التام وموافقتك الصريحة على كافة شروط الخدمة أعلاه.
+                أي إخلال بها سيعرض حسابك أو سيرفرك للحظر الدائم مع التنازل عن كافة مستحقاتك الافتراضية.
+              </p>
+              <div className="flex items-center justify-center gap-3 mt-5 flex-wrap">
+                <a href="https://discord.gg/weg5eGG5cr" target="_blank" rel="noopener noreferrer"
+                  style={{ background: C.primary, color: '#fff', fontWeight: 600, fontSize: '13px', borderRadius: '8px', padding: '10px 20px', textDecoration: 'none' }}
+                  className="inline-flex items-center gap-2 hover:opacity-90 transition-opacity">
+                  <HelpCircle className="w-4 h-4" />
+                  استفسر في Discord
+                </a>
+                <Link to="/privacy"
+                  style={{ background: 'transparent', color: C.muted, fontWeight: 500, fontSize: '13px', borderRadius: '8px', padding: '10px 20px', border: `1px solid ${C.surface3}` }}
+                  className="inline-flex items-center gap-2 hover:text-white transition-colors">
+                  سياسة الخصوصية
+                </Link>
+              </div>
             </div>
 
+            {/* footer */}
+            <div style={{ borderTop: `1px solid ${C.surface3}`, paddingTop: '20px' }}
+              className="flex items-center justify-between flex-wrap gap-3">
+              <span style={{ color: C.muted, fontSize: '11px', fontFamily: 'monospace' }}>
+                HEDRIX TECHNOLOGY · MAJESTIC FLUX · TOS V2025.1
+              </span>
+              <span style={{ color: `${C.muted}60`, fontSize: '11px', fontFamily: 'monospace' }}>
+                © {new Date().getFullYear()} ALL RIGHTS RESERVED
+              </span>
+            </div>
           </div>
-
-        </div>
-
-        {/* Footer info */}
-        <div className="text-center py-10 mt-8 border-t border-purple-500/10 text-xs text-purple-400/40">
-          Hedrix Technology · Majestic Flux Terms of Service · {new Date().getFullYear()}
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 

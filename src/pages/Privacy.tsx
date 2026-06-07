@@ -1,216 +1,336 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Lock, 
-  Eye, 
-  Database, 
-  UserCheck, 
-  Cpu, 
-  Scale, 
+import {
+  Lock,
+  Eye,
+  Database,
+  UserCheck,
+  Cpu,
+  Scale,
   HelpCircle,
   Clock,
-  ChevronLeft,
   CreditCard,
   Share2,
   Cookie,
   Mail,
   ShieldAlert,
   Compass,
-  Check
+  Check,
+  Terminal,
+  Zap,
+  Home,
+  ChevronRight,
+  AlertTriangle,
 } from 'lucide-react';
 
-const Privacy: React.FC = () => {
-  const [visible, setVisible] = useState(false);
-  const [activeSection, setActiveSection] = useState<string>('collect');
-  const [integrityHash, setIntegrityHash] = useState<string>('SHA256-4f7c89b2...');
-  const [systemLoad, setSystemLoad] = useState<number>(0.05);
+/* ─────────────── design tokens ─────────────── */
+const C = {
+  surface:  '#070713',
+  surface2: '#0B0B1A',
+  surface3: '#12122A',
+  primary:  '#724FFF',
+  glow:     '#8B6CFF',
+  on:       '#E9ECF5',
+  muted:    '#9AA4B2',
+  success:  '#22C55E',
+  warning:  '#FBBF24',
+  error:    '#FF4D4D',
+};
 
+/* ─────────────── section list ─────────────── */
+const SECTIONS = [
+  { id: 'collect',     code: 'PRI·01', label: 'البيانات التي نقوم بجمعها',             icon: Database    },
+  { id: 'usage',       code: 'PRI·02', label: 'كيف نستخدم البيانات',                   icon: Eye         },
+  { id: 'interactive', code: 'PRI·03', label: 'الهوية الرقمية والخدمات التفاعلية',     icon: UserCheck   },
+  { id: 'billing',     code: 'PRI·04', label: 'المدفوعات والاشتراكات',                 icon: CreditCard  },
+  { id: 'sharing',     code: 'PRI·05', label: 'مشاركة البيانات والحدود',               icon: Share2      },
+  { id: 'security',    code: 'PRI·06', label: 'حماية البيانات والمسؤولية',             icon: Lock        },
+  { id: 'cookies',     code: 'PRI·07', label: 'ملفات تعريف الارتباط',                  icon: Cookie      },
+  { id: 'rights',      code: 'PRI·08', label: 'حقوق المستخدم وحق المسح',               icon: Scale       },
+  { id: 'retention',   code: 'PRI·09', label: 'الاحتفاظ بالبيانات وتصفيتها',           icon: Clock       },
+  { id: 'thirdparty',  code: 'PRI·10', label: 'خدمات الطرف الثالث',                    icon: Cpu         },
+  { id: 'children',    code: 'PRI·11', label: 'خصوصية الأطفال والقصر',                 icon: ShieldAlert },
+  { id: 'updates',     code: 'PRI·12', label: 'التعديلات على السياسة',                 icon: HelpCircle  },
+  { id: 'contact',     code: 'PRI·13', label: 'التواصل والدعم الفني',                  icon: Mail        },
+];
+
+/* ─────────────── sub-components ─────────────── */
+
+function StatusBar() {
+  const [, setTick] = useState(0);
   useEffect(() => {
-    setVisible(true);
+    const t = setInterval(() => setTick(p => p + 1), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const now = new Date();
+  const ts = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+  return (
+    <div style={{ background: C.surface2, borderBottom: `1px solid ${C.primary}33` }}
+      className="sticky top-0 z-50 flex items-center justify-between px-5 py-2 text-[11px] font-mono select-none">
+      <div className="flex items-center gap-4">
+        <span style={{ color: C.primary }} className="flex items-center gap-1.5 font-semibold">
+          <Terminal className="w-3.5 h-3.5" />
+          MAJESTIC·FLUX
+        </span>
+        <span style={{ color: C.muted }}>DOC_TYPE: PRIVACY_POLICY</span>
+        <span style={{ color: C.muted }}>REV: 2025.1</span>
+      </div>
+      <div className="hidden sm:flex items-center gap-4">
+        <span className="flex items-center gap-1" style={{ color: C.success }}>
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block" />
+          TLS 1.3 ENCRYPTED
+        </span>
+        <span style={{ color: C.muted }}>{ts}</span>
+      </div>
+    </div>
+  );
+}
 
-    // Dynamic hash & system load simulation
-    const interval = setInterval(() => {
-      const hex = '0123456789abcdef';
-      let newHash = 'SHA256-';
-      for (let i = 0; i < 8; i++) {
-        newHash += hex[Math.floor(Math.random() * hex.length)];
-      }
-      newHash += '...';
-      setIntegrityHash(newHash);
-      setSystemLoad(parseFloat((0.02 + Math.random() * 0.08).toFixed(4)));
+interface SectionCardProps {
+  id: string;
+  code: string;
+  icon: React.ElementType;
+  title: string;
+  children: React.ReactNode;
+  accent?: 'warning' | 'error' | 'success' | 'default';
+}
+
+function SectionCard({ id, code, icon: Icon, title, children, accent = 'default' }: SectionCardProps) {
+  const accentColor = accent === 'warning' ? C.warning : accent === 'error' ? C.error : accent === 'success' ? C.success : C.primary;
+  return (
+    <div
+      id={id}
+      style={{
+        background: C.surface2,
+        borderLeft: `2px solid ${accentColor}`,
+        borderTop: `1px solid ${C.surface3}`,
+        borderRight: `1px solid ${C.surface3}`,
+        borderBottom: `1px solid ${C.surface3}`,
+        borderRadius: '10px',
+        scrollMarginTop: '80px',
+      }}
+      className="relative overflow-hidden transition-all duration-150 group hover:border-l-4"
+    >
+      <div style={{ background: `${accentColor}08`, borderBottom: `1px solid ${C.surface3}` }}
+        className="flex items-center justify-between px-5 py-3">
+        <div className="flex items-center gap-3">
+          <div style={{ background: `${accentColor}15`, borderRadius: '6px', padding: '6px' }}>
+            <Icon className="w-4 h-4" style={{ color: accentColor }} />
+          </div>
+          <div>
+            <span style={{ color: accentColor, fontSize: '10px', fontFamily: 'monospace', fontWeight: 700 }}
+              className="block tracking-widest opacity-70">{code}</span>
+            <h3 style={{ color: C.on, fontSize: '15px', fontWeight: 600 }}>{title}</h3>
+          </div>
+        </div>
+        <ChevronRight className="w-4 h-4 opacity-20 group-hover:opacity-60 transition-opacity" style={{ color: accentColor }} />
+      </div>
+      <div className="px-5 py-5">{children}</div>
+    </div>
+  );
+}
+
+function DataBlock({ label, value }: { label: string; value: string }) {
+  return (
+    <div style={{ background: `${C.primary}08`, border: `1px solid ${C.primary}18`, borderRadius: '6px' }}
+      className="flex items-start gap-3 p-3">
+      <span style={{ color: C.primary, fontFamily: 'monospace', fontSize: '11px', fontWeight: 700, whiteSpace: 'nowrap', paddingTop: '1px' }}>
+        &gt; {label}
+      </span>
+      <span style={{ color: C.muted, fontSize: '13px', lineHeight: 1.7 }}>{value}</span>
+    </div>
+  );
+}
+
+function CheckList({ items }: { items: string[] }) {
+  return (
+    <div className="space-y-2 mt-3">
+      {items.map((item, i) => (
+        <div key={i} className="flex items-start gap-3"
+          style={{ background: `${C.primary}08`, borderRadius: '6px', padding: '10px 12px', border: `1px solid ${C.primary}18` }}>
+          <Check className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: C.primary }} />
+          <span style={{ color: C.muted, fontSize: '13px', lineHeight: 1.7 }}>{item}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function WarningBlock({ children, error }: { children: React.ReactNode; error?: boolean }) {
+  const col = error ? C.error : C.warning;
+  return (
+    <div className="mt-4 flex items-start gap-3 rounded-md px-4 py-3"
+      style={{ background: `${col}10`, border: `1px solid ${col}30` }}>
+      <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: col }} />
+      <p style={{ color: `${C.on}99`, fontSize: '13px', lineHeight: 1.7 }}>{children}</p>
+    </div>
+  );
+}
+
+/* ─────────────── live metrics widget ─────────────── */
+function LiveMetrics() {
+  const [hash, setHash] = useState('SHA256-4f7c89b2...');
+  const [load, setLoad] = useState(0.05);
+  useEffect(() => {
+    const t = setInterval(() => {
+      const h = '0123456789abcdef';
+      let nh = 'SHA256-';
+      for (let i = 0; i < 8; i++) nh += h[Math.floor(Math.random() * h.length)];
+      setHash(nh + '...');
+      setLoad(parseFloat((0.02 + Math.random() * 0.08).toFixed(4)));
     }, 4000);
-
-    const handleScroll = () => {
-      const sections = [
-        'collect', 'usage', 'interactive', 'billing', 
-        'sharing', 'security', 'cookies', 'rights', 
-        'retention', 'thirdparty', 'children', 'updates', 'contact'
-      ];
-      
-      const scrollPosition = window.scrollY + 200;
-
-      for (const section of sections) {
-        const el = document.getElementById(section);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(section);
-            break;
-          }
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      clearInterval(interval);
-    };
+    return () => clearInterval(t);
   }, []);
 
-  const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      window.scrollTo({
-        top: el.offsetTop - 120,
-        behavior: 'smooth'
-      });
-      setActiveSection(id);
-    }
-  };
-
-  const sectionsList = [
-    { id: 'collect', code: 'COL_01', label: 'البيانات التي نقوم بجمعها', icon: Database },
-    { id: 'usage', code: 'USE_02', label: 'كيف نستخدم البيانات', icon: Eye },
-    { id: 'interactive', code: 'IDN_03', label: 'الهوية الرقمية والخدمات التفاعلية', icon: UserCheck },
-    { id: 'billing', code: 'BIL_04', label: 'المدفوعات والاشتراكات', icon: CreditCard },
-    { id: 'sharing', code: 'SHR_05', label: 'مشاركة البيانات والحدود', icon: Share2 },
-    { id: 'security', code: 'SEC_06', label: 'حماية البيانات والمسؤولية', icon: Lock },
-    { id: 'cookies', code: 'COK_07', label: 'ملفات تعريف الارتباط', icon: Cookie },
-    { id: 'rights', code: 'RGT_08', label: 'حقوق المستخدم وحق المسح', icon: Scale },
-    { id: 'retention', code: 'RET_09', label: 'الاحتفاظ بالبيانات وتصفيتها', icon: Clock },
-    { id: 'thirdparty', code: 'API_10', label: 'خدمات الطرف الثالث', icon: Cpu },
-    { id: 'children', code: 'AGE_11', label: 'خصوصية الأطفال والقصر', icon: ShieldAlert },
-    { id: 'updates', code: 'REV_12', label: 'التعديلات على السياسة', icon: HelpCircle },
-    { id: 'contact', code: 'MSG_13', label: 'التواصل والدعم الفني', icon: Mail }
+  const rows = [
+    { k: 'INTEGRITY_HASH', v: hash, col: C.primary },
+    { k: 'SYSTEM_LOAD', v: `${(load * 100).toFixed(2)}%`, col: C.on },
+    { k: 'SSL_CONNECTION', v: 'ACTIVE // TLS1.3', col: C.success },
+    { k: 'DATA_COMPLIANCE', v: 'GDPR // SAAS V2', col: C.warning },
   ];
 
   return (
-    <div className="min-h-screen bg-[#070709] text-slate-200 font-mono overflow-x-hidden relative selection:bg-amber-500 selection:text-black">
-      
-      {/* Stark background details: Scanline overlays & Warm amber particles */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_4px,6px_100%] pointer-events-none z-10 opacity-30" />
-      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-amber-500/5 rounded-full blur-[140px] pointer-events-none z-0" />
-      <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-slate-500/5 rounded-full blur-[140px] pointer-events-none z-0" />
-
-      {/* Custom Header: Brutally Minimalist Tech Header */}
-      <header className="border-b border-white/10 py-6 relative z-20 bg-[#070709]/80 backdrop-blur-md sticky top-0 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 select-none">
-        <div className="flex items-center gap-3">
-          <div className="w-6 h-6 border-2 border-amber-500 bg-amber-500/10 flex items-center justify-center font-extrabold text-[10px] text-amber-400">
-            M
+    <div style={{ background: C.surface2, border: `1px solid ${C.surface3}`, borderRadius: '10px', padding: '16px', marginBottom: '16px' }}>
+      <div className="flex items-center justify-between mb-3" style={{ borderBottom: `1px solid ${C.surface3}`, paddingBottom: '10px' }}>
+        <span style={{ color: C.muted, fontSize: '11px', fontFamily: 'monospace', fontWeight: 700 }} className="tracking-wider">
+          SYSTEM INSPECTOR
+        </span>
+        <span className="flex items-center gap-1.5" style={{ color: C.success, fontSize: '10px', fontFamily: 'monospace' }}>
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block" />
+          LIVE
+        </span>
+      </div>
+      <div className="space-y-2.5">
+        {rows.map(r => (
+          <div key={r.k} className="flex items-center justify-between">
+            <span style={{ color: `${C.muted}80`, fontSize: '10px', fontFamily: 'monospace' }}>{r.k}:</span>
+            <span style={{ color: r.col, fontSize: '10px', fontFamily: 'monospace', fontWeight: 700 }}>{r.v}</span>
           </div>
-          <span className="font-extrabold text-sm tracking-wider uppercase text-white">
-            Majestic Flux // Archive
-          </span>
-        </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
-        {/* Custom Navigation */}
-        <nav className="flex items-center gap-2 flex-wrap justify-center text-[10px] uppercase font-bold">
-          <Link to="/" className="px-3 py-1.5 border border-white/10 hover:border-amber-500/50 hover:bg-amber-500/5 transition-all text-slate-400 hover:text-amber-400">
-            [01] الرئيسية
-          </Link>
-          <Link to="/plans" className="px-3 py-1.5 border border-white/10 hover:border-amber-500/50 hover:bg-amber-500/5 transition-all text-slate-400 hover:text-amber-400">
-            [02] الاشتراكات
-          </Link>
-          <a href="https://discord.gg/weg5eGG5cr" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-white/10 hover:border-amber-500/50 hover:bg-amber-500/5 transition-all text-slate-400 hover:text-amber-400">
-            [03] الدعم الفني
-          </a>
-        </nav>
-      </header>
+/* ─────────────── main page ─────────────── */
+const Privacy: React.FC = () => {
+  const [activeSection, setActiveSection] = useState('collect');
+  const [mounted, setMounted] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
-      {/* Main Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-12 relative z-20">
-        
-        {/* Document Title Banner */}
-        <section
-          className={`py-8 mb-12 border-b border-white/10 transition-all duration-1000 ease-out ${
-            visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}
-        >
-          <div className="max-w-3xl">
-            <span className="text-[10px] text-amber-500 font-bold tracking-widest uppercase mb-2 block">// CLASSIFICATION: PRIVACY POLICY</span>
-            <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight uppercase mb-4 font-serif">
+  useEffect(() => {
+    setMounted(true);
+    const ids = SECTIONS.map(s => s.id);
+    const onScroll = () => {
+      const pos = window.scrollY + 160;
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && pos >= el.offsetTop && pos < el.offsetTop + el.offsetHeight) {
+          setActiveSection(id);
+          break;
+        }
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) { window.scrollTo({ top: el.offsetTop - 100, behavior: 'smooth' }); setActiveSection(id); }
+  };
+
+  return (
+    <div style={{ background: C.surface, minHeight: '100vh', color: C.on, fontFamily: 'Inter, sans-serif' }} dir="rtl">
+
+      {/* grid noise */}
+      <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.03]"
+        style={{ backgroundImage: `linear-gradient(${C.primary} 1px, transparent 1px), linear-gradient(90deg, ${C.primary} 1px, transparent 1px)`, backgroundSize: '48px 48px' }} />
+
+      {/* glow blobs */}
+      <div className="pointer-events-none fixed top-0 right-0 w-[600px] h-[600px] opacity-[0.04] rounded-full blur-[120px] z-0"
+        style={{ background: C.primary }} />
+      <div className="pointer-events-none fixed bottom-0 left-0 w-[500px] h-[500px] opacity-[0.03] rounded-full blur-[120px] z-0"
+        style={{ background: C.glow }} />
+
+      <div className="relative z-10">
+        <StatusBar />
+
+        {/* ── Page Header ── */}
+        <header className="max-w-7xl mx-auto px-4 sm:px-8 pt-12 pb-10">
+          <div className="flex items-center gap-2 mb-6" style={{ color: C.muted, fontSize: '12px', fontFamily: 'monospace' }}>
+            <Link to="/" className="flex items-center gap-1.5 hover:text-white transition-colors">
+              <Home className="w-3.5 h-3.5" />
+              الرئيسية
+            </Link>
+            <span>/</span>
+            <span style={{ color: C.primary }}>سياسة الخصوصية</span>
+          </div>
+
+          <div style={{ borderLeft: `3px solid ${C.primary}`, paddingRight: '20px' }}
+            className={`transition-all duration-700 ${mounted ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}>
+            <div className="flex items-center gap-3 mb-3">
+              <div style={{ background: `${C.primary}20`, borderRadius: '8px', padding: '8px' }}>
+                <Lock className="w-5 h-5" style={{ color: C.primary }} />
+              </div>
+              <span style={{ color: C.primary, fontSize: '11px', fontFamily: 'monospace', fontWeight: 700 }}
+                className="tracking-widest">LEGAL · PRIVACY POLICY · V2025.1</span>
+            </div>
+            <h1 style={{ fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: 800, color: C.on, lineHeight: 1.15 }}>
               سياسة الخصوصية والأمان
             </h1>
-            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-sans max-w-xl">
-              الوثيقة الحاكمة لحقوق البيانات الشخصية وحماية المعطيات الفنية والفوترة. يرجى الاطلاع على ضوابط معالجة البيانات قبل تفعيل خيارات الجيل الجديد.
+            <p style={{ color: C.muted, fontSize: '14px', marginTop: '10px', maxWidth: '560px', lineHeight: 1.7 }}>
+              الوثيقة الحاكمة لحقوق البيانات الشخصية وحماية المعطيات الفنية والفوترة. يرجى الاطلاع قبل تفعيل الخدمة.
             </p>
-          </div>
-        </section>
-
-        {/* Split Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Right Column: Live Integrity Scanner sidebar */}
-          <aside className="lg:col-span-4 sticky top-24 space-y-6">
-            
-            {/* System Status Display widget */}
-            <div className="border-2 border-white/10 bg-[#0c0c0e] p-6 rounded-none shadow-md relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
-              
-              <h3 className="text-xs font-bold text-white mb-4 border-b border-white/10 pb-3 flex items-center justify-between tracking-wider">
-                <span>SYSTEM INSPECTOR</span>
-                <span className="text-amber-500 text-[10px]">LIVE</span>
-              </h3>
-
-              <div className="space-y-3.5 text-[10px] text-slate-400 font-mono">
-                <div className="flex justify-between border-b border-white/5 pb-2">
-                  <span>INTEGRITY_HASH:</span>
-                  <span className="text-amber-400 font-bold">{integrityHash}</span>
-                </div>
-                <div className="flex justify-between border-b border-white/5 pb-2">
-                  <span>SYSTEM_LOAD:</span>
-                  <span className="text-slate-300 font-bold">{(systemLoad * 100).toFixed(2)}%</span>
-                </div>
-                <div className="flex justify-between border-b border-white/5 pb-2">
-                  <span>SSL_CONNECTION:</span>
-                  <span className="text-emerald-400 font-bold">ACTIVE // TLS1.3</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>DATA_COMPLIANCE:</span>
-                  <span className="text-amber-500 font-bold">GDPR // SAAS V2</span>
-                </div>
+            <div className="flex items-center gap-4 mt-5 flex-wrap">
+              <div style={{ background: `${C.success}15`, border: `1px solid ${C.success}40`, borderRadius: '6px' }}
+                className="flex items-center gap-1.5 px-3 py-1.5">
+                <Zap className="w-3 h-3" style={{ color: C.success }} />
+                <span style={{ color: C.success, fontSize: '11px', fontWeight: 600, fontFamily: 'monospace' }}>13 SECTIONS ACTIVE</span>
+              </div>
+              <div style={{ background: `${C.primary}15`, border: `1px solid ${C.primary}40`, borderRadius: '6px' }}
+                className="flex items-center gap-1.5 px-3 py-1.5">
+                <span style={{ color: C.primary, fontSize: '11px', fontFamily: 'monospace' }}>GDPR COMPLIANT</span>
               </div>
             </div>
+          </div>
+        </header>
 
-            {/* Monospace Sidebar Links */}
-            <div className="border border-white/10 bg-[#0c0c0e] p-5 shadow-lg">
-              <h3 className="text-xs font-bold text-slate-300 mb-3 border-b border-white/10 pb-3 uppercase tracking-widest flex items-center gap-2">
-                <Compass className="w-4 h-4 text-amber-500" />
-                فهرس الوثائق الفنية
-              </h3>
-              
-              <nav className="space-y-1 max-h-[40vh] overflow-y-auto custom-scrollbar pr-1">
-                {sectionsList.map((item) => {
-                  const Icon = item.icon;
-                  const active = activeSection === item.id;
+        {/* ── Body ── */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 pb-20 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+          {/* ─ Sidebar ─ */}
+          <aside ref={sidebarRef} className="hidden lg:block lg:col-span-4 sticky top-16 max-h-[calc(100vh-80px)] overflow-y-auto space-y-4">
+            <LiveMetrics />
+
+            <div style={{ background: C.surface2, border: `1px solid ${C.surface3}`, borderRadius: '10px', padding: '6px' }}>
+              <div style={{ borderBottom: `1px solid ${C.surface3}`, padding: '12px 14px', marginBottom: '4px' }}
+                className="flex items-center gap-2">
+                <Compass className="w-3.5 h-3.5" style={{ color: C.primary }} />
+                <span style={{ color: C.muted, fontSize: '11px', fontFamily: 'monospace', fontWeight: 700 }} className="tracking-wider">
+                  DOCUMENT INDEX
+                </span>
+              </div>
+              <nav className="space-y-0.5">
+                {SECTIONS.map(s => {
+                  const Icon = s.icon;
+                  const active = activeSection === s.id;
                   return (
-                    <button
-                      key={item.id}
-                      onClick={() => scrollToSection(item.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-3 text-right text-xs transition-all duration-300 border-r-2 ${
-                        active 
-                          ? 'bg-amber-500/5 text-amber-400 border-amber-500 font-bold shadow-[inset_3px_0_0_0_#f59e0b]' 
-                          : 'text-slate-500 hover:text-slate-300 hover:bg-white/5 border-transparent'
-                      }`}
+                    <button key={s.id} onClick={() => scrollTo(s.id)}
+                      style={{
+                        width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
+                        padding: '9px 12px', borderRadius: '7px', textAlign: 'right',
+                        background: active ? `${C.primary}18` : 'transparent',
+                        borderRight: active ? `2px solid ${C.primary}` : '2px solid transparent',
+                        transition: 'all 0.15s ease', cursor: 'pointer', border: 'none',
+                      }}
+                      className="hover:bg-white/5"
                     >
-                      <span className={`text-[9px] font-bold ${active ? 'text-amber-500' : 'text-slate-600'}`}>
-                        {item.code}
-                      </span>
-                      <Icon className={`w-3.5 h-3.5 shrink-0 ${active ? 'text-amber-400' : 'text-slate-700'}`} />
-                      <span className="truncate flex-grow font-sans font-semibold text-[11px]">{item.label}</span>
-                      {active && <ChevronLeft className="w-3 h-3 text-amber-400" />}
+                      <Icon className="w-3.5 h-3.5 shrink-0" style={{ color: active ? C.primary : C.muted, opacity: active ? 1 : 0.5 }} />
+                      <span style={{ color: active ? C.on : C.muted, fontSize: '12px', flex: 1, fontWeight: active ? 600 : 400 }}
+                        className="truncate text-right">{s.label}</span>
+                      <span style={{ color: active ? C.primary : 'transparent', fontSize: '9px', fontFamily: 'monospace', fontWeight: 700 }}
+                        className="shrink-0">{s.code}</span>
                     </button>
                   );
                 })}
@@ -218,321 +338,168 @@ const Privacy: React.FC = () => {
             </div>
           </aside>
 
-          {/* Left Column: Asymmetric Editorial Cards */}
-          <div className="lg:col-span-8 space-y-10">
-            
-            {/* 1. Data Collection */}
-            <div 
-              id="collect" 
-              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
-            >
-              <div className="absolute top-0 right-0 w-8 h-[1px] bg-amber-500" />
-              <div className="absolute top-0 right-0 w-[1px] h-8 bg-amber-500" />
-              
-              <div className="flex items-center gap-3 mb-6">
-                <Database className="w-5 h-5 text-amber-500 shrink-0" />
-                <div>
-                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // COL_01</span>
-                  <h3 className="text-lg font-bold text-white uppercase font-serif">1. البيانات التي نقوم بجمعها</h3>
-                </div>
-              </div>
-              
-              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans mb-6">
-                يقوم النظام تلقائياً وبشكل مبرمج بحفظ ومعالجة المعطيات الفنية الضرورية لتفعيل الاشتراكات والتواصل السحابي:
+          {/* ─ Content ─ */}
+          <div className="lg:col-span-8 space-y-4">
+
+            <SectionCard id="collect" code="PRI·01" icon={Database} title="البيانات التي نقوم بجمعها">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8, marginBottom: '12px' }}>
+                يقوم النظام تلقائياً بحفظ ومعالجة المعطيات الفنية الضرورية لتفعيل الاشتراكات والتواصل السحابي:
               </p>
-              
-              <div className="space-y-4 font-sans">
-                <div className="p-4 bg-black/40 border border-white/5">
-                  <h4 className="text-xs font-bold text-amber-400 mb-1 font-mono">&gt; USER_IDENTIFIERS</h4>
-                  <p className="text-[11px] text-slate-400 leading-relaxed">
-                    معرف المستخدم (Discord User ID)، اسم الحساب العام، الصورة الشخصية، ومعرفات السيرفر لتفعيل البوت.
-                  </p>
-                </div>
-
-                <div className="p-4 bg-black/40 border border-white/5">
-                  <h4 className="text-xs font-bold text-amber-400 mb-1 font-mono">&gt; SUBSCRIBER_TIER_DATA</h4>
-                  <p className="text-[11px] text-slate-400 leading-relaxed">
-                    فئة الاشتراك الحالي (مثل Core Access أو Prime Access أو Nexus Access)، وإعدادات التخصيص التفضيلية الخاصة بك.
-                  </p>
-                </div>
-
-                <div className="p-4 bg-black/40 border border-white/5">
-                  <h4 className="text-xs font-bold text-amber-400 mb-1 font-mono">&gt; INTERACTIVE_PHONE_DATA</h4>
-                  <p className="text-[11px] text-slate-400 leading-relaxed">
-                    النصوص والملفات المرفوعة والمدخلة اختيارياً من قبلك داخل واجهات الهاتف الافتراضية وأنظمة الهوية.
-                  </p>
-                </div>
-
-                <div className="p-4 bg-black/40 border border-white/5">
-                  <h4 className="text-xs font-bold text-amber-400 mb-1 font-mono">&gt; TELEMETRY_LOGS</h4>
-                  <p className="text-[11px] text-slate-400 leading-relaxed">
-                    نوع الأوامر والعمليات البرمجية المنفذة، معلومات المتصفح، وسجلات تشخيص الأخطاء البرمجية للموقع.
-                  </p>
-                </div>
+              <div className="space-y-2">
+                <DataBlock label="USER_IDENTIFIERS" value="معرف المستخدم (Discord User ID)، اسم الحساب العام، الصورة الشخصية، ومعرفات السيرفر لتفعيل البوت." />
+                <DataBlock label="SUBSCRIBER_TIER" value="فئة الاشتراك الحالي (Core / Prime / Nexus Access) وإعدادات التخصيص التفضيلية الخاصة بك." />
+                <DataBlock label="INTERACTIVE_DATA" value="النصوص والملفات المُدخلة اختيارياً داخل واجهات الهاتف الافتراضية وأنظمة الهوية." />
+                <DataBlock label="TELEMETRY_LOGS" value="نوع الأوامر المنفذة، معلومات المتصفح، وسجلات تشخيص الأخطاء البرمجية للموقع." />
               </div>
-            </div>
+            </SectionCard>
 
-            {/* 2. How We Use Data */}
-            <div 
-              id="usage" 
-              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
-            >
-              <div className="absolute top-0 right-0 w-8 h-[1px] bg-amber-500" />
-              <div className="absolute top-0 right-0 w-[1px] h-8 bg-amber-500" />
-
-              <div className="flex items-center gap-3 mb-6">
-                <Eye className="w-5 h-5 text-amber-500 shrink-0" />
-                <div>
-                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // USE_02</span>
-                  <h3 className="text-lg font-bold text-white uppercase font-serif">2. كيف نستخدم البيانات</h3>
-                </div>
-              </div>
-              
-              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans mb-4">
+            <SectionCard id="usage" code="PRI·02" icon={Eye} title="كيف نستخدم البيانات">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
                 يتم استخدام البيانات المجمعة حصرياً لتحقيق الالتزامات التقنية والفوترة وتأمين السيرفرات:
               </p>
-              
-              <div className="space-y-3 font-sans">
+              <CheckList items={[
+                'توفير ودعم وإدارة الخوادم الخاصة وتأمينها وضمان استجابة النظام.',
+                'التحقق التلقائي من حالة الدفع وتزامن خطط الاشتراك (Core, Prime, Nexus Access).',
+                'تحليل سجلات الأخطاء البرمجية لرفع الاستقرار وحظر محاولات إساءة الاستخدام.',
+                'التحقق الأمني للأنظمة لمنع عمليات القرصنة والتعدي على البنية التحتية.',
+              ]} />
+            </SectionCard>
+
+            <SectionCard id="interactive" code="PRI·03" icon={UserCheck} title="الهوية الرقمية والخدمات التفاعلية">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                تتضمن المنصة أنظمة محاكاة ترفيهية مثل الهويات ورخص القيادة والبطاقات التفاعلية.
+              </p>
+              <WarningBlock>
+                يُقر المستخدم بأن هذه البيانات افتراضية تماماً ولغرض الترفيه فقط داخل المنصة، ولا تحمل أي مرجعية رسمية أو قانونية في العالم الحقيقي. يلتزم المستخدم بعدم إدخال بيانات حقيقية حساسة.
+              </WarningBlock>
+            </SectionCard>
+
+            <SectionCard id="billing" code="PRI·04" icon={CreditCard} title="المدفوعات والاشتراكات">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8, marginBottom: '12px' }}>
+                تتم معالجة وتأمين المدفوعات عبر بوابات معتمدة متوافقة مع معايير الأمان (مثل Dodo Payments).
+              </p>
+              <DataBlock label="STORED_DATA" value="سجل تكويني للتحقق الفني يشمل: حالة الاشتراك، رقم الفاتورة المشفر، والمبلغ لغرض المراجعة فقط." />
+              <div className="mt-2">
+                <DataBlock label="NOT_STORED" value="لا تحتفظ خوادمنا بأرقام بطاقات الدفع أو البيانات المصرفية الحساسة." />
+              </div>
+            </SectionCard>
+
+            <SectionCard id="sharing" code="PRI·05" icon={Share2} title="مشاركة البيانات والحدود">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                لا نبيع بيانات المستخدمين أو السيرفرات لأي طرف ثالث. قد نشارك أجزاء تقنية محدودة فقط مع:
+              </p>
+              <CheckList items={[
+                'مزودي خدمات الاستضافة السحابية ومزودي بوابات الدفع لإتمام عمليات التشغيل.',
+                'السلطات الأمنية الرسمية عند استلام أوامر قضائية ملزمة بموجب القانون.',
+                'فرق الفحص الأمني لمنع وكشف محاولات التلاعب وإساءة استخدام المنصة.',
+              ]} />
+            </SectionCard>
+
+            <SectionCard id="security" code="PRI·06" icon={Lock} title="حماية البيانات والمسؤولية" accent="warning">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                تطبق Hedrix Technology تشفيراً شاملاً وجدراناً نارية لحماية قواعد البيانات وتراسل البيانات.
+              </p>
+              <WarningBlock error>
+                إقرار بعدم الضمان المطلق: يُقر المستخدم بأن الأنظمة الرقمية معرضة للاختراق دائماً، ويتنازل عن مقاضاة الشركة في حال فقدان أو تسرب البيانات نتيجة اختراقات برمجية غير متوقعة خارجة عن إرادتنا.
+              </WarningBlock>
+            </SectionCard>
+
+            <SectionCard id="cookies" code="PRI·07" icon={Cookie} title="ملفات تعريف الارتباط">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                نستخدم ملفات تعريف الارتباط (Cookies) وملفات التخزين المحلية في لوحة التحكم لتذكر جلسة تسجيل الدخول وتوثيق هويتك.
+                يمكنك تعطيلها عبر إعدادات المتصفح، ولكن قد تفقد بعض الميزات الفنية.
+              </p>
+              <DataBlock label="SESSION_COOKIE" value="ضرورية للتحقق من هوية المستخدم وجلسة لوحة التحكم. غير قابلة للتعطيل." />
+              <div className="mt-2">
+                <DataBlock label="ANALYTICS_COOKIE" value="اختيارية، تُستخدم لقياس أداء الموقع وتحسين تجربة المستخدم." />
+              </div>
+            </SectionCard>
+
+            <SectionCard id="rights" code="PRI·08" icon={Scale} title="حقوق المستخدم وحق المسح" accent="success">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                يحق للمشترك طلب الحصول على نسخة من بياناته، تعديلها، أو مسحها نهائياً من خوادمنا عبر فتح تذكرة دعم فني.
+              </p>
+              <WarningBlock>
+                تنويه: طلب حذف البيانات يؤدي فوراً إلى تصفير أرصدتك وإلغاء باقاتك النشطة وإعدادات السيرفر كلياً ودون إمكانية للاسترجاع.
+              </WarningBlock>
+            </SectionCard>
+
+            <SectionCard id="retention" code="PRI·09" icon={Clock} title="الاحتفاظ بالبيانات وتصفيتها">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                نحتفظ بالبيانات فقط للمدة المطلوبة لتقديم خدماتنا والوفاء بالمتطلبات التشغيلية والتأصيل المحاسبي.
+                نقوم بعمليات فلترة دورية لحذف سجلات التفاعل المنتهية الصلاحية بشكل آمن.
+              </p>
+              <div className="mt-3 grid grid-cols-2 gap-2">
                 {[
-                  'توفير ودعم وإدارة الخوادم الخاصة وتأمينها وضمان استجابة النظام.',
-                  'التحقق التلقائي من حالة الدفع وتزامن خطط الاشتراك (Core, Prime, Nexus Access).',
-                  'تحليل ومراجعة سجلات الأخطاء البرمجية لرفع الاستقرار وحظر محاولات إساءة الاستخدام.',
-                  'التحقق الأمني للأنظمة لمنع عمليات القرصنة والتعدي على البنية التحتية.'
-                ].map((text, i) => (
-                  <div key={i} className="flex items-start gap-2.5 p-3 bg-black/20 border border-white/5 text-xs text-slate-400">
-                    <Check className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
-                    <span>{text}</span>
+                  { label: 'بيانات الحساب', value: 'طوال فترة النشاط' },
+                  { label: 'سجلات الأوامر', value: '90 يوماً' },
+                  { label: 'بيانات الفوترة', value: '7 سنوات (قانوني)' },
+                  { label: 'سجلات الأخطاء', value: '30 يوماً' },
+                ].map(item => (
+                  <div key={item.label}
+                    style={{ background: `${C.primary}08`, border: `1px solid ${C.primary}18`, borderRadius: '6px', padding: '10px 12px' }}>
+                    <div style={{ color: C.primary, fontSize: '10px', fontFamily: 'monospace', fontWeight: 700 }}>{item.label}</div>
+                    <div style={{ color: C.on, fontSize: '13px', marginTop: '2px' }}>{item.value}</div>
                   </div>
                 ))}
               </div>
-            </div>
+            </SectionCard>
 
-            {/* 3. Digital Identity */}
-            <div 
-              id="interactive" 
-              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <UserCheck className="w-5 h-5 text-amber-500 shrink-0" />
-                <div>
-                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // IDN_03</span>
-                  <h3 className="text-lg font-bold text-white uppercase font-serif">3. الهوية الرقمية والخدمات التفاعلية</h3>
-                </div>
-              </div>
-              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans leading-relaxed mb-4">
-                تتضمن المنصة أنظمة محاكاة ترفيهية مثل الهويات ورخص القيادة والبطاقات التفاعلية. 
+            <SectionCard id="thirdparty" code="PRI·10" icon={Cpu} title="خدمات الطرف الثالث">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                يعتمد البوت والموقع على تكاملات خارجية تشمل واجهات Discord API الرسمية، بوابات الفوترة (مثل Dodo Payments)، ومزودي الاستضافة السحابية.
               </p>
-              <p className="text-slate-400 leading-[1.8] text-[11px] font-sans">
-                يقر المستخدم بأن هذه البيانات هي **افتراضية تماماً ولغرض الترفيه واللعب فقط** داخل المنصة، ولا تحمل أي مرجعية رسمية أو قانونية في العالم الحقيقي. يلتزم المستخدم بعدم إدخال بيانات حقيقية حساسة.
-              </p>
-            </div>
+              <WarningBlock>
+                جميع هذه المنصات تخضع لسياسات خصوصية مستقلة تماماً لا نتحمل مسؤوليتها الفنية. يرجى مراجعة سياساتها منفردة.
+              </WarningBlock>
+            </SectionCard>
 
-            {/* 4. Payments */}
-            <div 
-              id="billing" 
-              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <CreditCard className="w-5 h-5 text-amber-500 shrink-0" />
-                <div>
-                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // BIL_04</span>
-                  <h3 className="text-lg font-bold text-white uppercase font-serif">4. المدفوعات والاشتراكات</h3>
-                </div>
-              </div>
-              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans mb-4">
-                تتم معالجة وتأمين المدفوعات والفوترة السحابية عبر بوابات معتمدة متوافقة مع معايير الأمان (مثل Dodo Payments).
+            <SectionCard id="children" code="PRI·11" icon={ShieldAlert} title="خصوصية الأطفال والقصر" accent="error">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                خدمات Majestic Flux غير موجهة للأطفال أو القصر دون السن القانوني المسموح به لاستخدام التطبيقات الرقمية محلياً (عادة 13 عاماً فما دون).
               </p>
-              <p className="text-slate-400 text-xs font-sans mb-4">
-                لا تحتفظ خوادمنا بأرقام بطاقات الدفع أو البيانات المصرفية الحساسة. يُخزن فقط سجل تكويني للتحقق الفني يشمل حالة الاشتراك، رقم الفاتورة المشفر، والمبلغ لغرض المراجعة.
-              </p>
-            </div>
+              <WarningBlock error>
+                نحن لا نجمع عن عمد أي بيانات تخص القصر. إذا تبين لنا أن حساباً يعود لقاصر، سيتم حذفه فوراً.
+              </WarningBlock>
+            </SectionCard>
 
-            {/* 5. Sharing Data */}
-            <div 
-              id="sharing" 
-              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <Share2 className="w-5 h-5 text-amber-500 shrink-0" />
-                <div>
-                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // SHR_05</span>
-                  <h3 className="text-lg font-bold text-white uppercase font-serif">5. مشاركة البيانات والحدود</h3>
-                </div>
-              </div>
-              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans mb-4">
-                لا نبيع بيانات المستخدمين أو السيرفرات لأي طرف ثالث. قد نشارك أجزاء تقنية محدودة فقط مع:
+            <SectionCard id="updates" code="PRI·12" icon={HelpCircle} title="التعديلات على السياسة">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8 }}>
+                نحتفظ بكامل الصلاحية لتحديث هذه السياسة في أي وقت لمواكبة التغيرات القانونية والبرمجية.
+                يتم نشر النسخة المحدثة على هذا الرابط وتصبح سارية فوراً، ويُعتبر استمرارك بالاستخدام قبولاً بها.
               </p>
-              <ul className="space-y-2 text-slate-400 text-xs font-sans list-disc list-inside pr-2 leading-relaxed">
-                <li>مزودي خدمات الاستضافة السحابية ومزودي بوابات الدفع لإتمام عمليات التشغيل.</li>
-                <li>السلطات الأمنية الرسمية عند استلام مذكرات أو أوامر قضائية ملزمة بموجب القانون.</li>
-                <li>فرق الفحص الأمني لمنع وكشف محاولات التلاعب وإساءة استخدام المنصة.</li>
-              </ul>
-            </div>
+            </SectionCard>
 
-            {/* 6. Security */}
-            <div 
-              id="security" 
-              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <Lock className="w-5 h-5 text-amber-500 shrink-0" />
-                <div>
-                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // SEC_06</span>
-                  <h3 className="text-lg font-bold text-white uppercase font-serif">6. حماية البيانات والمسؤولية</h3>
-                </div>
-              </div>
-              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans mb-4">
-                تطبق Hedrix Technology تشفيراً شاملاً وجدراناً نارية لحماية قواعد البيانات وتراسل البيانات.
+            <SectionCard id="contact" code="PRI·13" icon={Mail} title="التواصل والدعم الفني" accent="success">
+              <p style={{ color: C.muted, fontSize: '14px', lineHeight: 1.8, marginBottom: '16px' }}>
+                إذا كان لديك أي استفسار بخصوص هذه السياسة أو رغبت في تعديل أو مراجعة بياناتك، يرجى فتح تذكرة دعم فني في سيرفرنا الرسمي:
               </p>
-              <div className="p-4 bg-red-950/20 border border-red-500/20 text-red-200/90 text-xs font-sans rounded-none flex items-start gap-2.5">
-                <ShieldAlert className="w-4.5 h-4.5 text-red-500 shrink-0 mt-0.5" />
-                <span>إقرار بعدم الضمان المطلق: يُقر المستخدم بأن الأنظمة الرقمية معرضة للاختراق دائماً، ويتنازل عن مقاضاة الشركة أو طلب تعويضات في حال فقدان أو تسرب البيانات نتيجة اختراقات برمجية غير متوقعة خارجة عن إرادتنا.</span>
-              </div>
-            </div>
-
-            {/* 7. Cookies */}
-            <div 
-              id="cookies" 
-              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <Cookie className="w-5 h-5 text-amber-500 shrink-0" />
-                <div>
-                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // COK_07</span>
-                  <h3 className="text-lg font-bold text-white uppercase font-serif">7. ملفات تعريف الارتباط</h3>
-                </div>
-              </div>
-              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans leading-relaxed">
-                نستخدم ملفات تعريف الارتباط (Cookies) وملفات التخزين المحلية في لوحة التحكم لتذكر جلسة تسجيل الدخول وتوثيق هويتك. يمكنك تعطيلها عبر إعدادات المتصفح، ولكن قد تفقد بعض الميزات الفنية.
-              </p>
-            </div>
-
-            {/* 8. User Rights */}
-            <div 
-              id="rights" 
-              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <Scale className="w-5 h-5 text-amber-500 shrink-0" />
-                <div>
-                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // RGT_08</span>
-                  <h3 className="text-lg font-bold text-white uppercase font-serif">8. حقوق المستخدم وحق المسح</h3>
-                </div>
-              </div>
-              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans mb-4">
-                يحق للمشترك طلب الحصول على نسخة من بياناته، تعديلها، أو مسحها نهائياً من خوادمنا عبر فتح تذكرة دعم فني.
-              </p>
-              <div className="p-4 bg-slate-900 border border-white/5 text-xs text-slate-400 font-sans">
-                * تنويه: طلب حذف البيانات يؤدي فوراً إلى تصفير أرصدتك وإلغاء باقاتك النشطة وإعدادات السيرفر كلياً ودون إمكانية للاسترجاع.
-              </div>
-            </div>
-
-            {/* 9. Data Retention */}
-            <div 
-              id="retention" 
-              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <Clock className="w-5 h-5 text-amber-500 shrink-0" />
-                <div>
-                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // RET_09</span>
-                  <h3 className="text-lg font-bold text-white uppercase font-serif">9. الاحتفاظ بالبيانات وتصفيتها</h3>
-                </div>
-              </div>
-              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans leading-relaxed">
-                نحتفظ بالبيانات فقط للمدة المطلوبة لتقديم خدماتنا والوفاء بالمتطلبات التشغيلية والتأصيل المحاسبي. نقوم بعمليات فلترة دورية لحذف سجلات التفاعل المنتهية الصلاحية بشكل آمن.
-              </p>
-            </div>
-
-            {/* 10. Third-Party API */}
-            <div 
-              id="thirdparty" 
-              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <Cpu className="w-5 h-5 text-amber-500 shrink-0" />
-                <div>
-                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // API_10</span>
-                  <h3 className="text-lg font-bold text-white uppercase font-serif">10. خدمات الطرف الثالث</h3>
-                </div>
-              </div>
-              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans leading-relaxed">
-                يعتمد البوت والموقع على تكاملات خارجية تشمل واجهات Discord API الرسمية، بوابات الفوترة (مثل Dodo Payments)، ومزودي الاستضافة السحابية. تخضع جميع هذه المنصات لسياسات خصوصية مستقلة تماماً لا نتحمل مسؤوليتها الفنية.
-              </p>
-            </div>
-
-            {/* 11. Children's Privacy */}
-            <div 
-              id="children" 
-              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <ShieldAlert className="w-5 h-5 text-amber-500 shrink-0" />
-                <div>
-                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // AGE_11</span>
-                  <h3 className="text-lg font-bold text-white uppercase font-serif">11. خصوصية الأطفال والقصر</h3>
-                </div>
-              </div>
-              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans leading-relaxed">
-                خدمات Majestic Flux غير موجهة للأطفال أو القصر دون السن القانوني المسموح به لاستخدام التطبيقات الرقمية محلياً (عادة 13 عاماً فما دون). نحن لا نجمع عن عمد أي بيانات تخص القصر.
-              </p>
-            </div>
-
-            {/* 12. Updates */}
-            <div 
-              id="updates" 
-              className="border border-white/10 bg-[#0a0a0c] p-6 md:p-8 relative hover:border-amber-500/20 transition-all duration-300 shadow-sm"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <HelpCircle className="w-5 h-5 text-amber-500 shrink-0" />
-                <div>
-                  <span className="text-[9px] text-amber-500/70 tracking-widest block font-bold">SUB_SECTION // REV_12</span>
-                  <h3 className="text-lg font-bold text-white uppercase font-serif">12. التعديلات على السياسة</h3>
-                </div>
-              </div>
-              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans leading-relaxed">
-                نحتفظ بكامل الصلاحية لتحديث أو تعديل وثيقة سياسة الخصوصية هذه في أي وقت لمواكبة التغيرات القانونية والبرمجية. يتم نشر النسخة المحدثة على هذا الرابط وتصبح سارية فوراً، ويعتبر استمرارك باستخدام الخدمات قبولاً بها.
-              </p>
-            </div>
-
-            {/* 13. Contact & Support */}
-            <div 
-              id="contact" 
-              className="border-2 border-amber-500 bg-amber-500/5 p-6 md:p-8 relative shadow-lg"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <Mail className="w-5 h-5 text-amber-500 shrink-0" />
-                <div>
-                  <span className="text-[9px] text-amber-500 tracking-widest block font-bold">SUB_SECTION // MSG_13</span>
-                  <h3 className="text-lg font-bold text-white uppercase font-serif">13. التواصل والدعم الفني</h3>
-                </div>
-              </div>
-              <p className="text-slate-300/80 leading-[1.8] text-xs md:text-sm font-sans leading-relaxed mb-6">
-                إذا كان لديك أي استفسار بخصوص هذه السياسة أو رغبت في تعديل أو مراجعة بياناتك المسجلة، يرجى فتح تذكرة دعم فني في سيرفرنا الرسمي:
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 items-center justify-start">
-                <a href="https://discord.gg/weg5eGG5cr" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-                  <div className="px-5 py-3 border border-amber-500 bg-amber-500 text-black text-xs font-mono font-bold hover:bg-transparent hover:text-amber-400 transition-all duration-300 text-center">
-                    &gt; OPEN_DISCORD_TICKET
-                  </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <a href="https://discord.gg/weg5eGG5cr" target="_blank" rel="noopener noreferrer"
+                  style={{ background: C.primary, color: '#fff', fontWeight: 600, fontSize: '13px', borderRadius: '8px', padding: '10px 20px', textDecoration: 'none' }}
+                  className="inline-flex items-center gap-2 hover:opacity-90 transition-opacity justify-center">
+                  <Mail className="w-4 h-4" />
+                  فتح تذكرة دعم فني
                 </a>
-                <Link to="/" className="w-full sm:w-auto">
-                  <div className="px-5 py-3 border border-white/10 bg-transparent text-slate-400 text-xs font-mono hover:text-white hover:border-white/20 transition-all duration-300 text-center">
-                    &gt; EXIT_TO_MAIN
-                  </div>
+                <Link to="/terms"
+                  style={{ background: 'transparent', color: C.muted, fontWeight: 500, fontSize: '13px', borderRadius: '8px', padding: '10px 20px', border: `1px solid ${C.surface3}` }}
+                  className="inline-flex items-center gap-2 hover:text-white transition-colors justify-center">
+                  شروط الاستخدام
                 </Link>
               </div>
+            </SectionCard>
+
+            {/* footer */}
+            <div style={{ borderTop: `1px solid ${C.surface3}`, paddingTop: '20px' }}
+              className="flex items-center justify-between flex-wrap gap-3">
+              <span style={{ color: C.muted, fontSize: '11px', fontFamily: 'monospace' }}>
+                HEDRIX TECHNOLOGY · MAJESTIC FLUX · PRIVACY V2025.1
+              </span>
+              <span style={{ color: `${C.muted}60`, fontSize: '11px', fontFamily: 'monospace' }}>
+                © {new Date().getFullYear()} ALL RIGHTS RESERVED
+              </span>
             </div>
-
           </div>
-
-        </div>
-
-        {/* Footer info */}
-        <div className="text-center py-12 mt-16 border-t border-white/10 text-slate-600 text-xs font-mono">
-          <p className="font-semibold text-slate-400/40 mb-2">MAJESTIC FLUX // SECURE ARCHIVE PLATFORM</p>
-          <p>HEDRIX TECHNOLOGY · ALL RIGHTS RESERVED © {new Date().getFullYear()}</p>
         </div>
       </div>
     </div>
