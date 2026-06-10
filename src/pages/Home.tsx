@@ -422,7 +422,7 @@ const Home: React.FC = () => {
       </nav>
 
       {/* ── Hero ── */}
-      <section id="hero" style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', overflow: 'hidden' }}>
+      <section id="hero" style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', overflow: 'hidden', isolation: 'isolate' }}>
         {/* Underlay purple glow */}
         <div style={{
           position: 'absolute', inset: 0, zIndex: 0,
@@ -435,13 +435,15 @@ const Home: React.FC = () => {
           style={{
             position: 'absolute', inset: 0, width: '100%', height: '100%',
             objectFit: 'cover', opacity: 0.45, zIndex: 1,
-            mixBlendMode: 'screen'
+            mixBlendMode: 'screen',
+            transform: 'translateZ(0)',
+            willChange: 'transform',
           }}
         />
         {/* Vignette overlay to fade video to background purple */}
         <div style={{
           position: 'absolute', inset: 0, zIndex: 2,
-          background: 'radial-gradient(circle at center, transparent 35%, #09061a 90%), linear-gradient(to bottom, #09061a 0%, rgba(9,6,26,0.2) 20%, rgba(9,6,26,0.2) 80%, #09061a 100%)'
+          background: 'radial-gradient(circle at center, transparent 25%, #09061a 80%), linear-gradient(to bottom, #09061a 0%, rgba(9,6,26,0.2) 20%, rgba(9,6,26,0.2) 80%, #09061a 100%)'
         }} />
 
         <div style={{ position: 'relative', zIndex: 3, maxWidth: 900, margin: '0 auto', padding: '128px 24px 96px' }}>
@@ -586,7 +588,14 @@ const Home: React.FC = () => {
 
       {/* ── Mission / scroll reveal ── */}
       <section ref={missionRef} style={{ padding: '128px 48px', textAlign: 'center', position: 'relative', zIndex: 1 }}>
-        <div style={{ position: 'relative', width: '100%', maxWidth: 560, margin: '0 auto 64px', borderRadius: 24, overflow: 'hidden', border: `1px solid ${P.border}`, boxShadow: `0 0 60px ${P.glow}` }}>
+        <div style={{
+          position: 'relative', width: '100%', maxWidth: 560, margin: '0 auto 64px',
+          borderRadius: 24, overflow: 'hidden',
+          border: `1px solid ${P.border}`,
+          boxShadow: `0 0 60px ${P.glow}`,
+          background: P.bg,
+          isolation: 'isolate',
+        }}>
           {/* Underlay glow */}
           <div style={{ position: 'absolute', inset: 0, zIndex: 0, background: 'radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 80%)' }} />
           
@@ -594,11 +603,19 @@ const Home: React.FC = () => {
             {...fadeUp(0)}
             src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260325_132944_a0d124bb-eaa1-4082-aa30-2310efb42b4b.mp4"
             autoPlay loop muted playsInline
-            style={{ width: '100%', display: 'block', aspectRatio: '1/1', objectFit: 'cover', zIndex: 1, mixBlendMode: 'screen' }}
+            style={{
+              width: '100%', display: 'block', aspectRatio: '1/1', objectFit: 'cover',
+              zIndex: 1, mixBlendMode: 'screen',
+              transform: 'translateZ(0)',
+              willChange: 'transform',
+            }}
           />
 
           {/* Vignette overlay */}
-          <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none', background: 'radial-gradient(circle at center, transparent 40%, #09061a 95%), linear-gradient(to bottom, #09061a 0%, transparent 20%, transparent 80%, #09061a 100%)' }} />
+          <div style={{
+            position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
+            background: 'radial-gradient(circle at center, transparent 30%, #09061a 80%), linear-gradient(to bottom, #09061a 0%, transparent 25%, transparent 75%, #09061a 100%), linear-gradient(to right, #09061a 0%, transparent 25%, transparent 75%, #09061a 100%)'
+          }} />
         </div>
 
         <p style={{ fontSize: 'clamp(22px, 3.5vw, 48px)', fontWeight: 700, letterSpacing: '-0.5px', lineHeight: 1.5, marginBottom: 40 }}>
@@ -761,7 +778,13 @@ const Home: React.FC = () => {
             </h2>
           </motion.div>
 
-          <div style={{ position: 'relative', width: '100%', borderRadius: 20, marginBottom: 48, overflow: 'hidden', border: `1px solid ${P.border}`, boxShadow: `0 0 60px ${P.glow}` }}>
+          <div style={{
+            position: 'relative', width: '100%', borderRadius: 20, marginBottom: 48, overflow: 'hidden',
+            border: `1px solid ${P.border}`,
+            boxShadow: `0 0 60px ${P.glow}`,
+            background: P.bg,
+            isolation: 'isolate',
+          }}>
             {/* Underlay glow */}
             <div style={{ position: 'absolute', inset: 0, zIndex: 0, background: 'radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 80%)' }} />
             
@@ -769,11 +792,19 @@ const Home: React.FC = () => {
               {...fadeUp(0.1)}
               src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260325_125119_8e5ae31c-0021-4396-bc08-f7aebeb877a2.mp4"
               autoPlay loop muted playsInline
-              style={{ width: '100%', objectFit: 'cover', zIndex: 1, mixBlendMode: 'screen', aspectRatio: '3/1', display: 'block' }}
+              style={{
+                width: '100%', objectFit: 'cover',
+                zIndex: 1, mixBlendMode: 'screen', aspectRatio: '3/1', display: 'block',
+                transform: 'translateZ(0)',
+                willChange: 'transform',
+              }}
             />
 
             {/* Vignette overlay */}
-            <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none', background: 'linear-gradient(to right, #09061a 0%, transparent 15%, transparent 85%, #09061a 100%), linear-gradient(to bottom, #09061a 0%, transparent 20%, transparent 80%, #09061a 100%)' }} />
+            <div style={{
+              position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
+              background: 'linear-gradient(to right, #09061a 0%, transparent 25%, transparent 75%, #09061a 100%), linear-gradient(to bottom, #09061a 0%, transparent 30%, transparent 70%, #09061a 100%)'
+            }} />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
