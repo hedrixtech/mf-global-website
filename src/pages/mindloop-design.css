@@ -1,0 +1,94 @@
+/* ── Almarai (Arabic-optimized) ─────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap');
+
+/* ── Design tokens — purple-dark theme ──────────────────────────────── */
+:root {
+  --bg:          #07040f;
+  --bg-mid:      #0e0820;
+  --bg-card:     #130d28;
+
+  --purple-glow:  rgba(109, 40, 217, 0.18);
+  --border:       rgba(139, 92, 246, 0.18);
+  --border-hover: rgba(139, 92, 246, 0.35);
+
+  --accent:       #a78bfa;   /* violet-400 */
+  --accent-mid:   #7c3aed;   /* violet-600 */
+
+  --text-muted:   rgba(196, 181, 253, 0.45);
+  --text-dimmed:  rgba(196, 181, 253, 0.25);
+
+  /* shadcn-compatible aliases */
+  --background:         0 0% 3%;
+  --foreground:         0 0% 100%;
+  --card:               270 40% 9%;
+  --card-foreground:    0 0% 100%;
+  --primary:            263 70% 73%;
+  --primary-foreground: 0 0% 0%;
+  --secondary:          263 30% 15%;
+  --secondary-foreground: 263 60% 85%;
+  --muted:              263 20% 18%;
+  --muted-foreground:   263 30% 65%;
+  --accent:             170 15% 45%;
+  --accent-foreground:  0 0% 100%;
+  --border:             263 30% 20%;
+  --input:              263 20% 16%;
+  --ring:               263 60% 55%;
+}
+
+/* ── Global reset ────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background: #07040f;
+  color: #fff;
+  font-family: 'Almarai', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+}
+
+/* ── Liquid Glass (barely-there purple tint) ─────────────────────────── */
+.liquid-glass {
+  background: rgba(109, 40, 217, 0.03);   /* near-invisible fill */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(139, 92, 246, 0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(196, 181, 253, 0.04),
+    0 2px 16px rgba(109, 40, 217, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(196, 181, 253, 0.18) 0%,
+    rgba(196, 181, 253, 0.04) 25%,
+    rgba(196, 181, 253, 0)    50%,
+    rgba(196, 181, 253, 0.04) 75%,
+    rgba(196, 181, 253, 0.18) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ── Scrollbar hide ─────────────────────────────────────────────────── */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Ambient page glow (global background orbs) ─────────────────────── */
+.ambient-orb {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
