@@ -423,10 +423,10 @@ const Home: React.FC = () => {
 
       {/* ── Hero ── */}
       <section id="hero" style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', overflow: 'hidden', isolation: 'isolate' }}>
-        {/* Underlay purple glow */}
+        {/* Underlay black background for seamless video screen blending */}
         <div style={{
           position: 'absolute', inset: 0, zIndex: 0,
-          background: 'radial-gradient(circle at center, rgba(139,92,246,0.25) 0%, transparent 70%)'
+          background: '#000000'
         }} />
         
         <video
@@ -440,10 +440,10 @@ const Home: React.FC = () => {
             willChange: 'transform',
           }}
         />
-        {/* Vignette overlay to fade video to background purple */}
+        {/* Redesigned vignette overlay: fades video to black first, then to theme purple */}
         <div style={{
           position: 'absolute', inset: 0, zIndex: 2,
-          background: 'radial-gradient(circle at center, transparent 25%, #09061a 80%), linear-gradient(to bottom, #09061a 0%, rgba(9,6,26,0.2) 20%, rgba(9,6,26,0.2) 80%, #09061a 100%)'
+          background: 'radial-gradient(circle at center, transparent 20%, #000000 65%, #09061a 100%), linear-gradient(to bottom, #09061a 0%, #000000 15%, transparent 35%, transparent 65%, #000000 85%, #09061a 100%)'
         }} />
 
         <div style={{ position: 'relative', zIndex: 3, maxWidth: 900, margin: '0 auto', padding: '128px 24px 96px' }}>
@@ -593,11 +593,11 @@ const Home: React.FC = () => {
           borderRadius: 24, overflow: 'hidden',
           border: `1px solid ${P.border}`,
           boxShadow: `0 0 60px ${P.glow}`,
-          background: P.bg,
+          background: 'radial-gradient(circle at center, #000000 60%, #09061a 100%)',
           isolation: 'isolate',
         }}>
-          {/* Underlay glow */}
-          <div style={{ position: 'absolute', inset: 0, zIndex: 0, background: 'radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 80%)' }} />
+          {/* Underlay black background for seamless video screen blending */}
+          <div style={{ position: 'absolute', inset: 0, zIndex: 0, background: '#000000' }} />
           
           <motion.video
             {...fadeUp(0)}
@@ -611,10 +611,10 @@ const Home: React.FC = () => {
             }}
           />
 
-          {/* Vignette overlay */}
+          {/* Vignette overlay fading transparent -> black -> purple at edges */}
           <div style={{
             position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
-            background: 'radial-gradient(circle at center, transparent 30%, #09061a 80%), linear-gradient(to bottom, #09061a 0%, transparent 25%, transparent 75%, #09061a 100%), linear-gradient(to right, #09061a 0%, transparent 25%, transparent 75%, #09061a 100%)'
+            background: 'radial-gradient(circle at center, transparent 30%, #000000 70%, #09061a 100%), linear-gradient(to bottom, #09061a 0%, #000000 20%, transparent 40%, transparent 60%, #000000 80%, #09061a 100%), linear-gradient(to right, #09061a 0%, #000000 20%, transparent 40%, transparent 60%, #000000 80%, #09061a 100%)'
           }} />
         </div>
 
@@ -782,11 +782,11 @@ const Home: React.FC = () => {
             position: 'relative', width: '100%', borderRadius: 20, marginBottom: 48, overflow: 'hidden',
             border: `1px solid ${P.border}`,
             boxShadow: `0 0 60px ${P.glow}`,
-            background: P.bg,
+            background: 'linear-gradient(to right, #09061a 0%, #000000 20%, #000000 80%, #09061a 100%)',
             isolation: 'isolate',
           }}>
-            {/* Underlay glow */}
-            <div style={{ position: 'absolute', inset: 0, zIndex: 0, background: 'radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 80%)' }} />
+            {/* Underlay black background for seamless video screen blending */}
+            <div style={{ position: 'absolute', inset: 0, zIndex: 0, background: '#000000' }} />
             
             <motion.video
               {...fadeUp(0.1)}
@@ -800,10 +800,10 @@ const Home: React.FC = () => {
               }}
             />
 
-            {/* Vignette overlay */}
+            {/* Vignette overlay fading transparent -> black -> purple at edges */}
             <div style={{
               position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
-              background: 'linear-gradient(to right, #09061a 0%, transparent 25%, transparent 75%, #09061a 100%), linear-gradient(to bottom, #09061a 0%, transparent 30%, transparent 70%, #09061a 100%)'
+              background: 'linear-gradient(to right, #09061a 0%, #000000 15%, transparent 30%, transparent 70%, #000000 85%, #09061a 100%), linear-gradient(to bottom, #09061a 0%, #000000 20%, transparent 40%, transparent 60%, #000000 80%, #09061a 100%)'
             }} />
           </div>
 
