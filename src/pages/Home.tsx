@@ -13,6 +13,7 @@ import {
   Linkedin,
   Twitter,
 } from 'lucide-react';
+import Navigation from '../components/Navigation';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface DiscordMessage {
@@ -270,32 +271,11 @@ const features = [
   },
 ];
 
-const stats = [
-  { value: '+12,000', label: 'عضو نشط' },
-  { value: '99.9%', label: 'وقت التشغيل' },
-  { value: '+400', label: 'سيرفر متصل' },
-];
-
 // ─── Main component ───────────────────────────────────────────────────────────
 const Home: React.FC = () => {
-  const navItems = [
-    { label: 'الرئيسية', target: 'hero' },
-    { label: 'كيف يعمل', target: 'how-it-works' },
-    { label: 'الفلسفة', target: 'philosophy' },
-    { label: 'حالات الاستخدام', target: 'use-cases' },
-  ];
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
   const [activeStep, setActiveStep] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<DiscordMessage[]>([]);
-  const [email, setEmail] = useState('');
 
   const missionRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -365,61 +345,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* ── Navbar ── */}
-      <nav style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
-        padding: '16px 48px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        background: 'transparent',
-        borderBottom: 'none',
-      }}>
-        {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <LogoMark />
-          <span style={{ fontWeight: 700, fontSize: 15, color: '#fff', letterSpacing: '-0.3px' }}>
-            Majestic Flux
-          </span>
-        </div>
-
-        {/* Nav links */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
-          {navItems.map((item, i) => {
-            const linkStyle: React.CSSProperties = {
-              color: P.muted,
-              textDecoration: 'none',
-              transition: 'color 0.2s',
-              cursor: 'pointer',
-            };
-            return (
-              <React.Fragment key={item.label}>
-                {i > 0 && <span style={{ color: P.border, margin: '0 4px' }}>•</span>}
-                <span
-                  onClick={() => scrollToSection(item.target)}
-                  style={linkStyle}
-                  onMouseOver={e => (e.currentTarget.style.color = '#fff')}
-                  onMouseOut={e => (e.currentTarget.style.color = P.muted)}
-                >
-                  {item.label}
-                </span>
-              </React.Fragment>
-            );
-          })}
-        </div>
-
-        {/* Social icons */}
-        <div style={{ display: 'flex', gap: 8 }}>
-          {[Instagram, Linkedin, Twitter].map((Icon, i) => (
-            <motion.a key={i} href="#" whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.94 }}
-              style={{
-                width: 40, height: 40, borderRadius: '50%',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                ...glassStyle,
-              }}
-            >
-              <Icon style={{ width: 16, height: 16, color: P.muted }} />
-            </motion.a>
-          ))}
-        </div>
-      </nav>
+      <Navigation />
 
       {/* ── Hero ── */}
       <section id="hero" style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', overflow: 'hidden', isolation: 'isolate' }}>
@@ -490,50 +416,7 @@ const Home: React.FC = () => {
             ارتقِ بتفاعل أعضائك من خلال دمج أنظمة محاكاة متطورة تشمل السجلات المدنية والمحافظ البنكية والأسواق الحرة.
           </motion.p>
 
-          {/* Email CTA */}
-          <motion.div {...fadeUp(0.5)} style={{ maxWidth: 480, margin: '0 auto 48px' }}>
-            <div style={{
-              display: 'flex', alignItems: 'center', borderRadius: 999, padding: 6,
-              ...glassStyle,
-              border: `1px solid rgba(139,92,246,0.30)`,
-            }}>
-              <input
-                type="email"
-                placeholder="أدخل بريدك الإلكتروني…"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                style={{
-                  flex: 1, background: 'transparent', color: '#fff',
-                  border: 'none', outline: 'none', fontSize: 14, padding: '0 16px',
-                  fontFamily: "'Almarai', sans-serif",
-                }}
-                dir="rtl"
-              />
-              <motion.button
-                whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}
-                style={{
-                  background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
-                  color: '#fff', fontWeight: 700, fontSize: 13,
-                  borderRadius: 999, padding: '12px 28px', border: 'none', cursor: 'pointer',
-                  boxShadow: '0 0 20px rgba(139,92,246,0.4)',
-                  fontFamily: "'Almarai', sans-serif",
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                ابدأ الآن
-              </motion.button>
-            </div>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.div {...fadeUp(0.65)} style={{ display: 'flex', justifyContent: 'center', gap: 48 }}>
-            {stats.map((s) => (
-              <div key={s.label} style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 26, fontWeight: 800, color: '#fff', letterSpacing: '-0.5px' }}>{s.value}</div>
-                <div style={{ fontSize: 11, color: P.dimmed, marginTop: 2 }}>{s.label}</div>
-              </div>
-            ))}
-          </motion.div>
+          <div style={{ marginBottom: 48 }} />
         </div>
       </section>
 

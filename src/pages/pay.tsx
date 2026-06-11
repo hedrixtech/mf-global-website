@@ -14,56 +14,25 @@ import {
   MessageSquare
 } from "lucide-react";
 
-// Pricing and addon plans mapping to show selected package details
+// Pricing and plans mapping to show selected package details
 const plans = {
-  basic: {
-    name: "الباقة الأساسية (Basic)",
-    amount: "2.99",
-    credits: "10,500",
-    bonus: "2,500",
+  free: {
+    name: "العضوية المجانية (Free)",
+    amount: "0.00",
+    features: "نظام اتصال محدود جداً • البوت الأساسي فقط • حدود استهلاك صارمة",
     type: "subscription",
   },
-  standard: {
-    name: "الباقة القياسية (Standard)",
+  core: {
+    name: "باقة النواة (Core)",
     amount: "3.99",
-    credits: "14,000",
-    bonus: "3,000",
+    features: "تفعيل نظام الاتصال الأساسي بالكامل • ميزات ديسكورد القياسية • طابور معالجة سريع • استخدام غير محدود • لوحة ويب أساسية",
     type: "subscription",
   },
-  epic: {
-    name: "الباقة الملحمية (Epic)",
-    amount: "5.99",
-    credits: "21,000",
-    bonus: "4,000",
-    type: "subscription",
-  },
-  royal: {
-    name: "الباقة الملكية (Royal)",
-    amount: "9.99",
-    credits: "35,000",
-    bonus: "7,500",
-    type: "subscription",
-  },
-  addon_50k: {
-    name: "إضافة 50,000 Flux (Add-on)",
-    amount: "1.99",
-    credits: "50,000",
-    bonus: null,
-    type: "addon",
-  },
-  addon_150k: {
-    name: "إضافة 150,000 Flux (Add-on)",
-    amount: "3.99",
-    credits: "150,000",
-    bonus: null,
-    type: "addon",
-  },
-  addon_400k: {
-    name: "إضافة 400,000 Flux (Add-on)",
+  pro: {
+    name: "الباقة الاحترافية (Pro)",
     amount: "7.99",
-    credits: "400,000",
-    bonus: null,
-    type: "addon",
+    features: "نظام الاتصال المتقدم بالكامل • لوحة ويب متطورة • أنظمة المدن والدول الكبرى • أولوية تنفيذ قصوى • استخدام غير محدود",
+    type: "subscription",
   },
 };
 
@@ -135,7 +104,7 @@ const Pay: React.FC = () => {
                 <div className="space-y-1">
                   <h4 className="text-sm font-bold text-purple-200">الدمج الجاري لمنصة</h4>
                   <p className="text-xs md:text-sm text-purple-200/80 leading-relaxed">
-                    نحن نعمل حالياً على دمج نظام <span className="text-purple-300 font-bold"></span> لتوفير عمليات دفع آلية وفورية مباشرة بالبطاقات الائتمانية دون أي تأخير. سنطلقها قريباً فور اكتمال الاختبارات.
+                    نحن نعمل حالياً على دمج نظام <span className="text-purple-300 font-bold">LemonSqueezy</span> لتوفير عمليات دفع آلية وفورية مباشرة بالبطاقات الائتمانية دون أي تأخير. سنطلقها قريباً فور اكتمال الاختبارات.
                   </p>
                 </div>
               </div>
@@ -199,7 +168,7 @@ const Pay: React.FC = () => {
           {/* Sidebar with chosen plan details */}
           {planInfo && (
             <div className="lg:col-span-5">
-              <div className="glass-panel rounded-3xl p-6 border border-white/5 bg-purple-950/15 relative overflow-hidden h-full flex flex-col justify-between">
+              <div className="rounded-3xl p-6 border border-white/5 bg-[#000000]/40 relative overflow-hidden h-full flex flex-col justify-between">
                 <div className="absolute -top-12 -left-12 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
                 
                 <div>
@@ -208,15 +177,9 @@ const Pay: React.FC = () => {
                     <span className="text-xs font-bold uppercase tracking-wider">تفاصيل الطلب المحدد</span>
                   </div>
 
-                  {planInfo.type === "subscription" ? (
-                    <div className="inline-block px-3 py-1 rounded-full border border-purple-500/20 bg-purple-900/10 text-purple-300 text-xs font-semibold mb-4">
-                      🚀 اشتراك شهري جديد
-                    </div>
-                  ) : (
-                    <div className="inline-block px-3 py-1 rounded-full border border-amber-500/20 bg-amber-900/10 text-amber-300 text-xs font-semibold mb-4">
-                      💎 إضافة رصيد Flux
-                    </div>
-                  )}
+                  <div className="inline-block px-3 py-1 rounded-full border border-purple-500/20 bg-purple-900/10 text-purple-300 text-xs font-semibold mb-4">
+                    🚀 تفعيل باقة تشغيلية غير محدودة
+                  </div>
 
                   <h4 className="text-xl md:text-2xl font-extrabold text-white mb-2">
                     {planInfo.name}
@@ -225,28 +188,15 @@ const Pay: React.FC = () => {
                   <div className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-indigo-200 mb-6">
                     ${planInfo.amount}
                     <span className="text-xs text-purple-300/50 font-normal mr-1">
-                      {planInfo.type === "subscription" ? "/ شهرياً" : " تدفع لمرة واحدة"}
+                      / شهرياً
                     </span>
                   </div>
 
-                  <div className="space-y-3.5 bg-black/10 rounded-2xl p-4 border border-white/5 mb-6">
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-purple-300/60">رصيد التشغيل الأساسي</span>
-                      <span className="font-bold text-white flex items-center gap-1">
-                        <Coins className="w-4 h-4 text-amber-400" />
-                        {planInfo.credits} Flux
-                      </span>
+                  <div className="space-y-3 bg-black/10 rounded-2xl p-4 border border-white/5 mb-6 font-almarai">
+                    <div className="text-purple-300/80 text-xs font-bold mb-2">المزايا المشمولة:</div>
+                    <div className="text-xs text-purple-200/70 leading-relaxed">
+                      {planInfo.features}
                     </div>
-
-                    {planInfo.bonus && (
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-emerald-400/80">رصيد إضافي ترحيبي (Bonus)</span>
-                        <span className="font-bold text-emerald-400 flex items-center gap-1">
-                          <Zap className="w-4 h-4 text-emerald-400" />
-                          +{planInfo.bonus} Flux
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
 
