@@ -65,7 +65,7 @@ const Subscription: React.FC = () => {
     {
       key: "pro",
       name: "الفئة البلاتينية · Platinum Pro",
-      price: "7.99",
+      price: "8.99",
       tierLabel: "القوة المطلقة والتحكم الكامل / PRO",
       tagline: "التجربة الفاخرة والأرقى للتحكم بمجتمعك الرقمي الكريستالي",
       gradient: "from-purple-600/20 via-indigo-950/10 to-[#020108]/90",
