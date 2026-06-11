@@ -82,73 +82,67 @@ const Pay: React.FC = () => {
                   <CreditCard className="w-6 h-6 text-purple-300" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-extrabold text-white">تحديث نظام المدفوعات</h3>
+                  <h3 className="text-2xl font-extrabold text-white">تفعيل العضوية المميزة</h3>
                   <p className="text-xs text-purple-300/60 mt-0.5">Majestic Flux Infrastructure</p>
                 </div>
               </div>
 
-              {/* PayPal Removal Notice */}
-              <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 mb-6 flex items-start gap-3">
-                <AlertCircle className="w-5.5 h-5.5 text-amber-400 shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <h4 className="text-sm font-bold text-amber-200">تم إيقاف الدفع عبر PayPal مؤقتاً</h4>
-                  <p className="text-xs md:text-sm text-purple-200/80 leading-relaxed">
-                    نظراً لعملنا على تطوير وتوسيع خيارات الدفع لتوفير السرعة والمرونة القصوى، قمنا بالاستغناء عن منصة PayPal.
-                  </p>
-                </div>
-              </div>
-
-              {/* LemonSqueezy Integration Promise */}
+              {/* Integrated Billing Notice */}
               <div className="rounded-2xl border border-purple-500/25 bg-purple-900/15 p-4 mb-6 flex items-start gap-3">
-                <Clock className="w-5.5 h-5.5 text-purple-400 shrink-0 mt-0.5 animate-pulse" />
+                <Zap className="w-5.5 h-5.5 text-purple-400 shrink-0 mt-0.5" />
                 <div className="space-y-1">
-                  <h4 className="text-sm font-bold text-purple-200">الدمج الجاري لمنصة</h4>
+                  <h4 className="text-sm font-bold text-purple-200">الترقية التلقائية والمدفوعات المتكاملة</h4>
                   <p className="text-xs md:text-sm text-purple-200/80 leading-relaxed">
-                    نحن نعمل حالياً على دمج نظام <span className="text-purple-300 font-bold">LemonSqueezy</span> لتوفير عمليات دفع آلية وفورية مباشرة بالبطاقات الائتمانية دون أي تأخير. سنطلقها قريباً فور اكتمال الاختبارات.
+                    تمت ترقية نظام المدفوعات لدينا بنجاح ودمجه بالكامل داخل لوحة التحكم الرسمية لتفعيل الباقات وتجديدها بشكل فوري وبشكل مؤتمت بالكامل.
                   </p>
                 </div>
               </div>
 
               {/* Current Procedure Steps */}
               <div className="space-y-4 mb-8">
-                <h4 className="text-sm font-bold text-white mb-2">كيفية إتمام التفعيل حالياً؟</h4>
+                <h4 className="text-sm font-bold text-white mb-2">خطوات تفعيل وترقية الاشتراك:</h4>
                 
                 <div className="flex gap-3">
                   <div className="w-6 h-6 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-bold flex items-center justify-center shrink-0">١</div>
                   <p className="text-xs md:text-sm text-purple-200/70 leading-relaxed">
-                    اضغط على زر <strong>"الانتقال إلى الدعم الفني"</strong> بالأسفل ليتم توجيهك لخادم الديسكورد الرسمي.
+                    التوجه إلى <strong>لوحة التحكم (الداشبورد)</strong> بالضغط على الزر أدناه.
                   </p>
                 </div>
 
                 <div className="flex gap-3">
                   <div className="w-6 h-6 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-bold flex items-center justify-center shrink-0">٢</div>
                   <p className="text-xs md:text-sm text-purple-200/70 leading-relaxed">
-                    قم بفتح تذكرة دعم فني جديدة (Ticket) من خلال قسم الدعم المخصص في السيرفر.
+                    اختيار السيرفر أو الخادم الذي تريد ترقية خطته أو تفعيلها.
                   </p>
                 </div>
 
                 <div className="flex gap-3">
                   <div className="w-6 h-6 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-bold flex items-center justify-center shrink-0">٣</div>
                   <p className="text-xs md:text-sm text-purple-200/70 leading-relaxed">
-                    زود فريق الدعم باسم الباقة التي اخترتها، وسيتم إرشادك لإتمام الدفع وتفعيل الباقة لسيرفرك يدوياً فوراً.
+                    الذهاب إلى قسم <strong>الفوترة والمدفوعات (Billing & Payments)</strong> داخل إعدادات السيرفر.
+                  </p>
+                </div>
+
+                <div className="flex gap-3">
+                  <div className="w-6 h-6 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-bold flex items-center justify-center shrink-0">٤</div>
+                  <p className="text-xs md:text-sm text-purple-200/70 leading-relaxed">
+                    اختيار الترقية أو تجديد خطتك الحالية مباشرة وبطريقة آمنة.
                   </p>
                 </div>
               </div>
 
-              {/* Discord Support CTA Button */}
+              {/* Dashboard CTA Button */}
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 <a 
-                  href="https://discord.gg/weg5eGG5cr" 
+                  href="https://majesticflux-dashboard.vercel.app/guilds" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="w-full sm:w-auto"
                 >
                   <Button primary>
                     <span className="flex items-center gap-2">
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58 1.334 18.061a.066.066 0 0 0 .038.035c1.282.946 2.513 1.51 3.738 1.884a.07.07 0 0 0 .078-.034c.18-.374.387-.866.53-1.246a11.16 11.16 0 0 0 5.584 0c.143.38.35.872.53 1.246a.07.07 0 0 0 .078.034c1.225-.374 2.456-.938 3.738-1.884a.066.066 0 0 0 .038-.035c1.472-3.953 1.055-7.533-.305-9.664a.07.07 0 0 0-.032-.027ZM8.02 15.33c-1.18 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.176 1.104 2.157 2.418 0 1.334-.956 2.419-2.157 2.419Zm7.975 0c-1.18 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.176 1.104 2.157 2.418 0 1.334-.946 2.419-2.157 2.419Z" />
-                      </svg>
-                      الانتقال إلى الدعم الفني
+                      <Zap className="w-4 h-4 text-purple-300" />
+                      الانتقال إلى لوحة التحكم
                     </span>
                   </Button>
                 </a>
@@ -202,9 +196,9 @@ const Pay: React.FC = () => {
 
                 <div className="rounded-xl bg-purple-500/5 border border-purple-500/10 p-3.5">
                   <div className="flex gap-2.5">
-                    <MessageSquare className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+                    <Zap className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                     <p className="text-xs text-purple-200/70 leading-relaxed">
-                      انسخ اسم الباقة المحددة أعلاه (<span className="text-purple-300 font-bold">{planInfo.name}</span>) وزوّد به موظف الدعم الفني لمباشرة التفعيل الفوري لسيرفرك.
+                      بإمكانك تفعيل أو ترقية باقتك مباشرة وبشكل آلي عبر الانتقال إلى لوحة التحكم واختيار السيرفر ثم قسم الفوترة والمدفوعات.
                     </p>
                   </div>
                 </div>
