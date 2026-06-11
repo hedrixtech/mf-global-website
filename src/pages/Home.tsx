@@ -587,13 +587,19 @@ const Home: React.FC = () => {
       </section>
 
       {/* ── Mission / scroll reveal ── */}
-      <section ref={missionRef} style={{ padding: '128px 48px', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+      <section ref={missionRef} style={{
+        padding: '128px 48px',
+        textAlign: 'center',
+        position: 'relative',
+        zIndex: 1,
+        background: 'linear-gradient(to bottom, #09061a 0%, #000000 15%, #000000 85%, #09061a 100%)'
+      }}>
         <div style={{
           position: 'relative', width: '100%', maxWidth: 560, margin: '0 auto 64px',
           borderRadius: 24, overflow: 'hidden',
           border: `1px solid ${P.border}`,
           boxShadow: `0 0 60px ${P.glow}`,
-          background: 'radial-gradient(circle at center, #000000 60%, #09061a 100%)',
+          background: '#000000',
           isolation: 'isolate',
         }}>
           {/* Underlay black background for seamless video screen blending */}
@@ -611,10 +617,10 @@ const Home: React.FC = () => {
             }}
           />
 
-          {/* Vignette overlay fading transparent -> black -> purple at edges */}
+          {/* Vignette overlay fading transparent -> black at card edges */}
           <div style={{
             position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
-            background: 'radial-gradient(circle at center, transparent 30%, #000000 70%, #09061a 100%), linear-gradient(to bottom, #09061a 0%, #000000 20%, transparent 40%, transparent 60%, #000000 80%, #09061a 100%), linear-gradient(to right, #09061a 0%, #000000 20%, transparent 40%, transparent 60%, #000000 80%, #09061a 100%)'
+            background: 'radial-gradient(circle at center, transparent 30%, #000000 80%), linear-gradient(to bottom, #000000 0%, transparent 20%, transparent 80%, #000000 100%), linear-gradient(to right, #000000 0%, transparent 20%, transparent 80%, #000000 100%)'
           }} />
         </div>
 
@@ -769,7 +775,13 @@ const Home: React.FC = () => {
       </section>
 
       {/* ── Solution / features ── */}
-      <section id="use-cases" style={{ padding: '96px 48px', borderTop: `1px solid ${P.border}`, position: 'relative', zIndex: 1 }}>
+      <section id="use-cases" style={{
+        padding: '96px 48px',
+        borderTop: `1px solid ${P.border}`,
+        position: 'relative',
+        zIndex: 1,
+        background: 'linear-gradient(to bottom, #09061a 0%, #000000 15%, #000000 85%, #09061a 100%)'
+      }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <motion.div {...fadeUp(0)} style={{ textAlign: 'center', marginBottom: 56 }}>
             <div style={{ fontSize: 11, letterSpacing: '3px', textTransform: 'uppercase', color: P.dimmed, marginBottom: 16 }}>SOLUTION</div>
@@ -782,7 +794,7 @@ const Home: React.FC = () => {
             position: 'relative', width: '100%', borderRadius: 20, marginBottom: 48, overflow: 'hidden',
             border: `1px solid ${P.border}`,
             boxShadow: `0 0 60px ${P.glow}`,
-            background: 'linear-gradient(to right, #09061a 0%, #000000 20%, #000000 80%, #09061a 100%)',
+            background: '#000000',
             isolation: 'isolate',
           }}>
             {/* Underlay black background for seamless video screen blending */}
@@ -800,10 +812,10 @@ const Home: React.FC = () => {
               }}
             />
 
-            {/* Vignette overlay fading transparent -> black -> purple at edges */}
+            {/* Vignette overlay fading transparent -> black at card edges */}
             <div style={{
               position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
-              background: 'linear-gradient(to right, #09061a 0%, #000000 15%, transparent 30%, transparent 70%, #000000 85%, #09061a 100%), linear-gradient(to bottom, #09061a 0%, #000000 20%, transparent 40%, transparent 60%, #000000 80%, #09061a 100%)'
+              background: 'linear-gradient(to right, #000000 0%, transparent 25%, transparent 75%, #000000 100%), linear-gradient(to bottom, #000000 0%, transparent 25%, transparent 75%, #000000 100%)'
             }} />
           </div>
 
