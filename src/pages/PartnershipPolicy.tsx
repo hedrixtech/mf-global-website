@@ -150,8 +150,40 @@ const PartnershipPolicy: React.FC = () => {
       )
     },
     {
-      id: "fairuse",
+      id: "custom-designs",
       num: "٠٧",
+      title: "تخصيص التصاميم والهوية البصرية الخاصة",
+      content: (
+        <div className="space-y-3 text-slate-300 text-xs md:text-sm leading-relaxed font-light">
+          <p>
+            أصبح بإمكان الشركاء الآن تعديل كامل التصاميم والواجهات البصرية داخل أنظمة Majestic Flux واعتماد هوية بصرية وتصاميم خاصة بالكامل لنسختهم المستقلة وفق الضوابط التالية:
+          </p>
+          <ul className="space-y-2 text-slate-400 text-xs list-disc list-inside pr-2">
+            <li>
+              <strong className="text-white">توفير التصاميم:</strong> يقر الشريك بأن Majestic Flux لا تقدم خدمات تصميم الرسومات أو الهوية البصرية، ويقع على عاتق الشريك بالكامل توفير وتجهيز كافة الملفات والأصول التصميمية.
+            </li>
+            <li>
+              <strong className="text-white">المعايير الجمالية والفنية:</strong> يجب تقديم كافة التصاميم من طرف الشريك وفقاً للقوانين الفنية والمعايير والضوابط الجمالية المعتمدة لدى Majestic Flux. يجب أن يكون كل شيء على نفس مستوى الجودة والفخامة لجمالية نظامنا.
+            </li>
+            <li>
+              <strong className="text-white">التنسيق المسبق ودليل التصميم:</strong> يلتزم الشريك بالتواصل المباشر مع <strong>المدير التنفيذي المسؤول عن الشراكة</strong> قبل البدء في أي أعمال تصميمية، وذلك لاستلاف دليل التصاميم المعتمد (Design Style Guide) وفهم التوصيات الفنية الخاصة لكل ميزة ونظام.
+            </li>
+            <li>
+              <strong className="text-white">شروط باقة الـ 8 أشهر أو أعلى:</strong> تتوفر ميزة دمج الهوية والتصاميم الخاصة تلقائياً لشركائنا في باقة <strong>Growth Partnership (8 أشهر)</strong> وباقة <strong>Elite Partnership (12 شهراً)</strong>، بشرط وجود اشتراك نشط في <strong>العضوية البلاتينية (Platinum Pro)</strong> شهرياً.
+            </li>
+            <li>
+              <strong className="text-white">شروط باقة الـ 4 أشهر (Starter):</strong> بالنسبة للشركاء في باقة <strong>Starter Partnership (4 أشهر)</strong>، يمكن منح هذه الميزة فقط كحالة استثنائية وبناءً على طلب رسمي يقدم لاعتماده من مسؤول الشراكة. ويعد الاشتراك الشهري في <strong>العضوية البلاتينية (Platinum Pro)</strong> شرطاً أساسياً وإلزامياً، كما قد تطبق رسوم تأسيس وتكامل فني إضافية.
+            </li>
+            <li>
+              <strong className="text-white">المراجعة والاعتماد الفني:</strong> تخضع جميع الأصول التصميمية المقدمة لمراجعة فنية قبل دمجها في النظام لضمان توافق الحجم والأداء وعدم التأثير سلباً على استقرار الخدمة وسرعة المعالجة.
+            </li>
+          </ul>
+        </div>
+      )
+    },
+    {
+      id: "fairuse",
+      num: "٠٨",
       title: "سياسة الاستهلاك العادل للبنية التحتية",
       content: (
         <div className="space-y-3 text-slate-300 text-xs md:text-sm leading-relaxed font-light">
@@ -176,7 +208,7 @@ const PartnershipPolicy: React.FC = () => {
     },
     {
       id: "ip-rights",
-      num: "٠٨",
+      num: "٠٩",
       title: "حقوق الملكية الفكرية والأكواد",
       content: (
         <div className="space-y-3 text-slate-300 text-xs md:text-sm leading-relaxed font-light">
@@ -191,7 +223,7 @@ const PartnershipPolicy: React.FC = () => {
     },
     {
       id: "termination",
-      num: "٠٩",
+      num: "١٠",
       title: "إنهاء وتعليق الشراكة",
       content: (
         <div className="space-y-3 text-slate-300 text-xs md:text-sm leading-relaxed font-light">
@@ -208,7 +240,7 @@ const PartnershipPolicy: React.FC = () => {
     },
     {
       id: "philosophy",
-      num: "١٠",
+      num: "١١",
       title: "فلسفة البرنامج والتعاون الفني",
       content: (
         <div className="p-5 rounded-xl bg-[#000000]/30 border border-slate-800 text-slate-300 text-xs md:text-sm leading-relaxed">

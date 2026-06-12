@@ -8,7 +8,8 @@ import {
   ChevronRight, 
   HelpCircle, 
   Layers, 
-  Check 
+  Check,
+  Palette
 } from 'lucide-react';
 
 const PartnershipPlans: React.FC = () => {
@@ -38,6 +39,7 @@ const PartnershipPlans: React.FC = () => {
         "حتى ٦ تعديلات وصيانة هيكلية",
         "نسخة خاصة فنية محدودة",
         "دعم فني أساسي ومتابعة تذاكر",
+        "تصاميم خاصة (طلب استثنائي + رسوم)",
         "أولوية تنفيذ قياسية"
       ],
       linkText: "بدء خطة Starter"
@@ -57,6 +59,7 @@ const PartnershipPlans: React.FC = () => {
         "حتى ٧ طلبات ميزات مخصصة ومستقلة",
         "حتى ١٥ تعديل وصيانة شاملة",
         "نسخة خاصة كاملة بالهوية والاسم",
+        "تعديل وتكامل التصاميم الخاصة (بلاتيني)",
         "خادم استضافة سحابي مخصص ومستقل",
         "دعم مباشر وسريع وقنوات اتصال مفضلة",
         "أولوية تنفيذ متوسطة"
@@ -79,6 +82,7 @@ const PartnershipPlans: React.FC = () => {
         "طلبات ميزات وتعديلات غير محدودة (وفق التقييم الفني)",
         "تعديلات وصيانة غير محدودة للنسخة",
         "نسخة خاصة متكاملة ومستقلة تماماً",
+        "تعديل وتكامل التصاميم الخاصة (بلاتيني)",
         "خادم تشغيل سحابي عالي الأداء ومحمي",
         "مشاركة في خارطة تطوير المنصة (Roadmap)",
         "أولوية برمجية وتطويرية قصوى ومباشرة"
@@ -318,6 +322,50 @@ const PartnershipPlans: React.FC = () => {
                       <span className="text-amber-400 font-mono font-bold">{item.price}</span>
                     </li>
                   ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Custom Branding & Designs Section */}
+        <section className="border-t border-purple-500/10 pt-16 mb-20">
+          <div className="text-right mb-8">
+            <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+                <Palette className="w-4 h-4 text-purple-400" />
+              </div>
+              <span>تكامل التصاميم المخصصة والهوية البصرية</span>
+            </h3>
+            <p className="text-xs text-purple-300/40">تخصيص الواجهات والرسومات داخل أنظمة ماجستك فلكس لتناسب هوية مجتمعك</p>
+          </div>
+
+          <div className="bg-gradient-to-b from-purple-950/5 via-black/40 to-[#020108]/60 p-8 rounded-2xl border border-purple-500/10 shadow-xl text-slate-300 text-xs md:text-sm leading-relaxed font-light space-y-4">
+            <p>
+              أصبح بإمكان شركائنا الآن تعديل كامل التصاميم والواجهات البصرية داخل أنظمة Majestic Flux واعتماد هوية بصرية وتصاميم خاصة بالكامل لنسختهم المستقلة.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 text-xs">
+              <div className="space-y-2.5">
+                <h4 className="text-white font-bold flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                  <span>معايير وشروط التفعيل</span>
+                </h4>
+                <ul className="space-y-2 pr-4 text-slate-400 list-disc list-inside">
+                  <li><strong>باقة 8 أشهر فأعلى (Growth / Elite):</strong> تتوفر الميزة تلقائياً مع اشتراك العضوية البلاتينية الشهري.</li>
+                  <li><strong>باقة 4 أشهر (Starter):</strong> تتطلب تقديم طلب استثنائي لاعتماده من مسؤول الشراكة، مع اشتراك بلاتيني (وقد تطبق رسوم إضافية).</li>
+                  <li><strong>دليل الهوية:</strong> يجب التواصل مع المدير التنفيذي قبل البدء لاستلام دليل الأنماط ومعايير الميزات الفنية.</li>
+                </ul>
+              </div>
+
+              <div className="space-y-2.5">
+                <h4 className="text-white font-bold flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                  <span>شروط الجودة والجمالية المعتمدة</span>
+                </h4>
+                <ul className="space-y-2 pr-4 text-slate-400 list-disc list-inside">
+                  <li><strong>مسؤولية التصاميم:</strong> لا يقدم نظام ماجستك فلكس خدمة تصميم الرسومات؛ ويقع تجهيزها بالكامل على الشريك.</li>
+                  <li><strong>المستوى الاحترافي:</strong> يجب تقديم التصاميم وفق المعايير الفنية والجمالية الرفيعة لتطابق فخامة Majestic Flux.</li>
+                  <li><strong>المراجعة الفنية:</strong> تخضع التصاميم للفحص البرمجي لضمان توافق الحجم والأداء وعدم تأثر استقرار السيرفر.</li>
                 </ul>
               </div>
             </div>
